@@ -2,7 +2,10 @@
   "name": "mw-claude",
   "version": "0.0.0",
   "type": "module",
-  "bin": { "mw-claude": "./bin/mw-claude.js" },
+  "bin": {
+    "ccdisplay": "./bin/mw-claude.js",
+    "mw-claude": "./bin/mw-claude.js"
+  },
   "main": "./dist/cli.js",
   "scripts": {
     "build": "tsc -p tsconfig.json && node -e \"require('node:fs').cpSync('src/static','dist/static',{recursive:true})\"",
