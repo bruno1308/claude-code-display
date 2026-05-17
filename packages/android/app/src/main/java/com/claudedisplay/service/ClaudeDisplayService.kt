@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
+import android.os.PowerManager
 import com.claudedisplay.audio.BluetoothScoController
 import com.claudedisplay.audio.SpeechCapture
 import com.claudedisplay.pairing.PairingStore
@@ -35,6 +36,7 @@ class ClaudeDisplayService : Service() {
     private lateinit var capture: SpeechCapture
     private var relay: RelayClient? = null
     private var relayJobs: List<Job> = emptyList()
+    private var wakeLock: PowerManager.WakeLock? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -74,6 +76,14 @@ class ClaudeDisplayService : Service() {
             )
         } else {
             startForeground(NotificationFactory.NOTIFICATION_ID, notification)
+        }
+
+        // Partial wake lock keeps the CPU running so the foreground service
+        // isn't suspended in Doze / app-standby. Released in onDestroy.
+        val pm = getSystemService(PowerManager::class.java)
+        wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "ClaudeDisplay::ServiceWakeLock").apply {
+            setReferenceCounted(false)
+            acquire()
         }
 
         startRelay()
@@ -168,6 +178,8 @@ class ClaudeDisplayService : Service() {
         relay?.stop()
         relay = null
         try { sco.stop() } catch (_: Throwable) {}
+        try { wakeLock?.release() } catch (_: Throwable) {}
+        wakeLock = null
         scope.cancel()
         ServiceState.running.value = false
         ServiceState.relayStatus.value = "stopped"

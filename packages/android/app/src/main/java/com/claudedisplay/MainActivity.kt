@@ -6,6 +6,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.PowerManager
+import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -69,6 +71,19 @@ fun MainScreen(ctx: Context, pairingUri: Uri?, modifier: Modifier = Modifier) {
             needed += Manifest.permission.POST_NOTIFICATIONS
         }
         permLauncher.launch(needed.toTypedArray())
+
+        // Battery optimization exemption — without this, Android can kill the
+        // foreground service when the app has been idle, which breaks the
+        // hands-free flow. Send the user to the system settings dialog once;
+        // if they grant it, the OS leaves our service alone.
+        val pm = ctx.getSystemService(Context.POWER_SERVICE) as PowerManager
+        if (!pm.isIgnoringBatteryOptimizations(ctx.packageName)) {
+            val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
+                data = Uri.parse("package:${ctx.packageName}")
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            try { ctx.startActivity(intent) } catch (_: Throwable) {}
+        }
     }
 
     // Consume incoming pairing URI on first composition.

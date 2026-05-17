@@ -84,14 +84,35 @@ export function connect(opts) {
 
   openOnce();
 
+  // When the browser tab/device becomes visible again after sleep/throttle,
+  // force-reconnect. Browsers throttle setInterval (our heartbeat) when the
+  // tab isn't visible, so the WS often dies silently during sleep. Don't
+  // wait for the next ping cycle — get a fresh WS immediately.
+  function onVisible() {
+    if (document.visibilityState !== 'visible' || stopped) return;
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      // Force-close; reconnect machinery handles the rest.
+      try { ws.close(); } catch {}
+    } else if (!ws) {
+      // We were already disconnected — kick off a fresh connect now instead
+      // of waiting out the backoff timer.
+      openOnce();
+    }
+  }
+  document.addEventListener('visibilitychange', onVisible);
+  window.addEventListener('pageshow', onVisible);
+
   return {
     async send(obj) {
-      if (!ws || ws.readyState !== WebSocket.OPEN) return;
+      if (!ws || ws.readyState !== WebSocket.OPEN) return false;
       const ct = await encrypt(JSON.stringify(obj), paired.daemonPub, paired.clientPriv);
       ws.send(JSON.stringify({ type: 'msg', ct }));
+      return true;
     },
     stop() {
       stopped = true;
+      document.removeEventListener('visibilitychange', onVisible);
+      window.removeEventListener('pageshow', onVisible);
       try { ws?.close(); } catch {}
     },
   };
