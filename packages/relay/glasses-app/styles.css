@@ -64,8 +64,15 @@ html, body {
   min-height: 0;
 }
 
+.btn-row {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
 .talk-btn {
-  width: 100%;
+  flex: 1;
   height: 160px;
   border: 0;
   border-radius: 24px;
@@ -80,6 +87,50 @@ html, body {
     box-shadow 200ms cubic-bezier(0.4, 0.04, 0.5, 1),
     background 200ms cubic-bezier(0.4, 0.04, 0.5, 1);
   will-change: transform, box-shadow, background;
+}
+
+.send-btn {
+  flex: 0 0 160px;
+  height: 160px;
+  border: 0;
+  border-radius: 24px;
+  background: #2da46c;
+  color: var(--fg-primary);
+  font-size: 22px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 300ms cubic-bezier(0.6, 0, 0.4, 1),
+    box-shadow 200ms cubic-bezier(0.4, 0.04, 0.5, 1);
+}
+
+.send-btn:focus,
+.send-btn.focused {
+  outline: none;
+  transform: scale(0.95);
+  box-shadow: 0 0 0 3px #2da46c, 0 0 24px rgba(45, 164, 108, 0.7);
+}
+
+.send-btn.hidden { display: none; }
+
+.draft {
+  background: var(--bg-surface-alt);
+  border-radius: 12px;
+  border: 1px dashed #7a8597;
+  padding: 8px 14px;
+  font-size: 16px;
+  line-height: 1.4;
+  color: #c8e0c8;
+  flex-shrink: 0;
+}
+.draft.hidden { display: none; }
+.draft-label {
+  display: block;
+  font-size: 11px;
+  color: var(--fg-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 2px;
 }
 
 .talk-btn:focus,

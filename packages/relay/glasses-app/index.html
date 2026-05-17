@@ -16,14 +16,31 @@
       </header>
 
       <main class="main-area">
-        <button
-          id="talk-btn"
-          class="talk-btn focusable"
-          data-action="toggle-talk"
-          aria-label="Hold to talk"
-        >
-          <span class="talk-btn-label" id="talk-btn-label">Tap to talk</span>
-        </button>
+        <div class="btn-row">
+          <button
+            id="talk-btn"
+            class="talk-btn focusable"
+            data-action="toggle-talk"
+            aria-label="Tap to talk"
+          >
+            <span class="talk-btn-label" id="talk-btn-label">Tap to talk</span>
+          </button>
+          <button
+            id="send-btn"
+            class="send-btn focusable hidden"
+            data-action="send-draft"
+            aria-label="Send draft"
+          >
+            <span id="send-btn-label">Send</span>
+          </button>
+        </div>
+
+        <section
+          id="draft"
+          class="draft hidden"
+          aria-live="polite"
+          aria-label="Pending draft"
+        ></section>
 
         <section
           id="transcript"

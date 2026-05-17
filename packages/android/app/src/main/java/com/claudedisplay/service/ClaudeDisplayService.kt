@@ -130,8 +130,11 @@ class ClaudeDisplayService : Service() {
                 ServiceState.recording.value = false
                 ServiceState.talkLabel.value = "Push to talk"
                 ServiceState.uiHint.value = null
-                ServiceState.transcript.value = ServiceState.transcript.value + ("you" to text)
-                relay?.send(JSONObject(mapOf("type" to "prompt", "text" to text)))
+                // Send as a DRAFT — the glasses show it for confirmation before
+                // shipping to Claude. Glasses sends the actual prompt when the
+                // user taps Send. Locally we add a (draft) row for visibility.
+                ServiceState.transcript.value = ServiceState.transcript.value + ("draft" to text)
+                relay?.send(JSONObject(mapOf("type" to "draft", "text" to text)))
                 updateNotification()
             }
             capture.onError = { code ->

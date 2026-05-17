@@ -5,6 +5,9 @@ const els = {
   status: document.getElementById('status-text'),
   talkBtn: document.getElementById('talk-btn'),
   talkBtnLabel: document.getElementById('talk-btn-label'),
+  sendBtn: document.getElementById('send-btn'),
+  sendBtnLabel: document.getElementById('send-btn-label'),
+  draft: document.getElementById('draft'),
   transcript: document.getElementById('transcript'),
   screenMain: document.getElementById('screen-main'),
   screenNotPaired: document.getElementById('screen-not-paired'),
@@ -14,6 +17,7 @@ const state = {
   paired: null,
   relay: null,
   recording: false,
+  pendingDraft: null,   // string, or null
   focusables: [],
   focusIndex: 0,
 };
@@ -44,13 +48,42 @@ function appendTurn(kind, text) {
 function setRecording(on, label) {
   state.recording = on;
   els.talkBtn.classList.toggle('recording', on);
-  els.talkBtnLabel.textContent = label ?? (on ? 'Asked phone to listen…' : 'Tap to talk');
+  els.talkBtnLabel.textContent = label ?? (on ? 'Asked phone to listen…' : (state.pendingDraft ? 'Re-record' : 'Tap to talk'));
 }
 
-// D-pad: Up/Down toggles focus between talk button and transcript.
+function setDraft(text) {
+  state.pendingDraft = text;
+  if (text == null) {
+    els.draft.classList.add('hidden');
+    els.draft.textContent = '';
+    els.sendBtn.classList.add('hidden');
+  } else {
+    els.draft.classList.remove('hidden');
+    els.draft.innerHTML = '';
+    const label = document.createElement('span');
+    label.className = 'draft-label';
+    label.textContent = 'draft';
+    const body = document.createElement('div');
+    body.textContent = text;
+    els.draft.appendChild(label);
+    els.draft.appendChild(body);
+    els.sendBtn.classList.remove('hidden');
+  }
+  rebuildFocusables();
+}
+
+// D-pad focus order. When a draft is pending, Send is included and gets default focus.
 function rebuildFocusables() {
-  state.focusables = [els.talkBtn, els.transcript];
-  state.focusIndex = 0;
+  const list = [els.talkBtn];
+  if (state.pendingDraft != null) list.push(els.sendBtn);
+  list.push(els.transcript);
+  state.focusables = list;
+  // Prefer focusing Send if a fresh draft just arrived.
+  if (state.pendingDraft != null) {
+    state.focusIndex = list.indexOf(els.sendBtn);
+  } else {
+    state.focusIndex = Math.min(state.focusIndex, list.length - 1);
+  }
   applyFocus();
 }
 
@@ -76,9 +109,13 @@ document.addEventListener('keydown', (e) => {
     e.preventDefault();
     moveFocus(1);
   } else if (e.key === 'Enter' || e.key === ' ') {
-    if (state.focusables[state.focusIndex] === els.talkBtn) {
+    const active = state.focusables[state.focusIndex];
+    if (active === els.talkBtn) {
       e.preventDefault();
       handleTalkPress();
+    } else if (active === els.sendBtn) {
+      e.preventDefault();
+      handleSendPress();
     }
   } else if (e.key === 'Escape' || e.key === 'Backspace') {
     state.focusIndex = 0;
@@ -87,19 +124,32 @@ document.addEventListener('keydown', (e) => {
 });
 
 els.talkBtn.addEventListener('click', handleTalkPress);
+els.sendBtn.addEventListener('click', handleSendPress);
 
-// Plan 5: hands-free trigger. Tapping the talk button (EMG, D-pad Enter, or
-// click) sends a trigger_record control message; the phone receives it and
-// runs the SR pipeline. Local Web Speech API is unavailable on the Display
-// browser, so we don't attempt it.
+// Tap-to-talk: send a trigger_record to the phone. If there's already a draft
+// pending, the new transcription will overwrite it (the phone sends a fresh
+// draft on completion).
 function handleTalkPress() {
   if (!state.relay) {
     setStatus('not connected');
     return;
   }
-  if (state.recording) return;  // ignore re-press while phone is recording
+  if (state.recording) return;
   state.relay.send({ type: 'trigger_record' });
   setRecording(true);
+}
+
+// Send the pending draft as a real prompt → daemon types it into Claude.
+function handleSendPress() {
+  const text = state.pendingDraft;
+  if (!text || !state.relay) return;
+  state.relay.send({ type: 'prompt', text });
+  appendTurn('you', text);
+  setDraft(null);
+  // After sending, refocus the talk button so the next EMG tap starts a new draft.
+  state.focusIndex = state.focusables.indexOf(els.talkBtn);
+  applyFocus();
+  setRecording(false);
 }
 
 // Boot.
@@ -119,10 +169,14 @@ function handleTalkPress() {
     paired,
     onStatus: setStatus,
     onMessage: (obj) => {
-      // Any decrypted msg from a peer means our trigger landed and the phone
-      // is doing its job (or has finished). Reset the recording UI.
+      // Any decrypted msg from a peer means the round-trip is happening.
       if (state.recording) setRecording(false);
-      if (obj.type === 'prompt' && typeof obj.text === 'string') {
+      if (obj.type === 'draft' && typeof obj.text === 'string') {
+        // Phone finished transcribing — show the text for confirmation.
+        setDraft(obj.text);
+      } else if (obj.type === 'prompt' && typeof obj.text === 'string') {
+        // Another peer (e.g. the phone in legacy mode, or a laptop client)
+        // sent a prompt directly — mirror it into the transcript.
         appendTurn('you', obj.text);
       } else if (obj.type === 'reply' && typeof obj.text === 'string') {
         appendTurn('claude', obj.text);
