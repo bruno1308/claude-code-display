@@ -1,0 +1,167 @@
+:root {
+  --bg-page: #000000;
+  --bg-surface: #0a0a0f;
+  --bg-surface-alt: #1c1e21;
+  --fg-primary: #ffffff;
+  --fg-secondary: #e4e6eb;
+  --fg-muted: #b0b3b8;
+  --accent: #3a7afe;
+  --accent-glow: rgba(58, 122, 254, 0.65);
+  --danger: #ff6b6b;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  width: 600px;
+  height: 600px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: var(--bg-page);
+  color: var(--fg-primary);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app-root {
+  width: 600px;
+  height: 600px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  height: 100%;
+}
+
+.screen.hidden { display: none; }
+
+.status-strip {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-surface);
+  border-radius: 16px;
+  font-size: 14px;
+  color: var(--fg-secondary);
+  padding: 0 16px;
+  flex-shrink: 0;
+}
+
+.main-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+}
+
+.talk-btn {
+  width: 100%;
+  height: 160px;
+  border: 0;
+  border-radius: 24px;
+  background: var(--bg-surface-alt);
+  color: var(--fg-primary);
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition:
+    transform 300ms cubic-bezier(0.6, 0, 0.4, 1),
+    box-shadow 200ms cubic-bezier(0.4, 0.04, 0.5, 1),
+    background 200ms cubic-bezier(0.4, 0.04, 0.5, 1);
+  will-change: transform, box-shadow, background;
+}
+
+.talk-btn:focus,
+.talk-btn.focused {
+  outline: none;
+  transform: scale(0.95);
+  box-shadow: 0 0 0 3px var(--accent), 0 0 24px var(--accent-glow);
+}
+
+.talk-btn.recording {
+  background: var(--danger);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 3px var(--danger), 0 0 12px var(--danger); }
+  50%      { box-shadow: 0 0 0 6px var(--danger), 0 0 32px var(--danger); }
+}
+
+.transcript {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  background: var(--bg-surface);
+  border-radius: 16px;
+  padding: 12px 16px;
+  font-size: 16px;
+  line-height: 1.4;
+  position: relative;
+}
+
+.transcript:focus,
+.transcript.focused {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent), 0 0 16px var(--accent-glow);
+}
+
+.transcript::after {
+  content: '';
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: block;
+  height: 32px;
+  margin-top: -32px;
+  background: linear-gradient(to top, var(--bg-surface) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+.turn { margin-bottom: 12px; }
+.turn-you { color: #9ad0ff; }
+.turn-claude { color: var(--fg-primary); }
+.turn-label {
+  display: block;
+  font-size: 12px;
+  color: var(--fg-muted);
+  margin-bottom: 2px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.not-paired {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+  background: var(--bg-surface);
+  border-radius: 24px;
+}
+.not-paired h1 { font-size: 28px; margin: 0 0 16px; }
+.not-paired p { font-size: 16px; color: var(--fg-secondary); margin: 4px 0; }
+.not-paired .cli {
+  font-family: ui-monospace, "SF Mono", Consolas, monospace;
+  font-size: 13px;
+  background: var(--bg-surface-alt);
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin: 12px 0;
+  word-break: break-all;
+}

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=600, height=600, initial-scale=1.0" />
+  <title>Claude Display</title>
+  <link rel="icon" href="favicon.png" type="image/png" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-root">
+    <div id="screen-main" class="screen">
+      <header class="status-strip" aria-live="polite">
+        <span id="status-text">starting…</span>
+      </header>
+
+      <main class="main-area">
+        <button
+          id="talk-btn"
+          class="talk-btn focusable"
+          data-action="toggle-talk"
+          aria-label="Hold to talk"
+        >
+          <span class="talk-btn-label" id="talk-btn-label">Tap to talk</span>
+        </button>
+
+        <section
+          id="transcript"
+          class="transcript focusable"
+          tabindex="0"
+          aria-live="polite"
+          aria-label="Conversation transcript"
+        ></section>
+      </main>
+    </div>
+
+    <div id="screen-not-paired" class="screen hidden">
+      <div class="not-paired">
+        <h1>Not paired</h1>
+        <p>On your PC, run:</p>
+        <p class="cli">mw-claude pair --relay-url wss://&lt;this-host&gt;/api/ws</p>
+        <p>and open the URL it prints — on these glasses (via the Meta Display companion app).</p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
