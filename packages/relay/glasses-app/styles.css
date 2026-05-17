@@ -73,7 +73,7 @@ html, body {
 
 .talk-btn {
   flex: 1;
-  height: 160px;
+  height: 96px;
   border: 0;
   border-radius: 24px;
   background: var(--bg-surface-alt);
@@ -90,8 +90,8 @@ html, body {
 }
 
 .send-btn {
-  flex: 0 0 160px;
-  height: 160px;
+  flex: 0 0 120px;
+  height: 96px;
   border: 0;
   border-radius: 24px;
   background: #2da46c;
@@ -155,12 +155,20 @@ html, body {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
+  overflow-x: hidden;
   background: var(--bg-surface);
   border-radius: 16px;
-  padding: 12px 16px;
-  font-size: 16px;
+  padding: 14px 18px;
+  font-size: 18px;
   line-height: 1.4;
   position: relative;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+.transcript > .turn > div {
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
 }
 
 .transcript:focus,
@@ -169,18 +177,8 @@ html, body {
   box-shadow: 0 0 0 2px var(--accent), 0 0 16px var(--accent-glow);
 }
 
-.transcript::after {
-  content: '';
-  position: sticky;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: block;
-  height: 32px;
-  margin-top: -32px;
-  background: linear-gradient(to top, var(--bg-surface) 0%, transparent 100%);
-  pointer-events: none;
-}
+/* Removed gradient fade overlay — was visually hiding the last lines of
+   long Claude replies, making text appear "cut off". */
 
 .turn { margin-bottom: 12px; }
 .turn-you { color: #9ad0ff; }
