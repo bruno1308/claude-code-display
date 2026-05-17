@@ -19,3 +19,4 @@ packages/android/.idea/
 packages/android/captures/
 packages/android/*.iml
 packages/android/app/*.iml
+.claude/
