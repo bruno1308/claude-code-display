@@ -100,15 +100,70 @@ function handleTalkPress() {
   }
 }
 
-// Placeholder — Task 8 replaces this with Web Speech API.
-let pendingTranscript = '';
-function startRecording() {
-  setRecording(true);
-  pendingTranscript = '';
+// Web Speech API integration with fallback.
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recognition = null;
+let interimText = '';
+let finalText = '';
+
+if (SR) {
+  recognition = new SR();
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  recognition.lang = navigator.language || 'en-US';
+
+  recognition.onresult = (event) => {
+    interimText = '';
+    finalText = '';
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      const transcript = event.results[i][0].transcript;
+      if (event.results[i].isFinal) finalText += transcript;
+      else interimText += transcript;
+    }
+    els.talkBtnLabel.textContent = (finalText + interimText).trim() || 'Listening…';
+  };
+
+  recognition.onerror = (event) => {
+    setStatus('speech error: ' + event.error);
+    setRecording(false);
+  };
+
+  recognition.onend = () => {
+    if (state.recording) {
+      stopRecordingAndSend();
+    }
+  };
 }
+
+function startRecording() {
+  finalText = '';
+  interimText = '';
+  setRecording(true);
+  if (recognition) {
+    try {
+      recognition.start();
+    } catch (err) {
+      setStatus('speech start error: ' + err.message);
+      setRecording(false);
+    }
+  } else {
+    setRecording(false);
+    const text = (prompt('Type your prompt (speech not supported here):') || '').trim();
+    if (text) {
+      appendTurn('you', text);
+      state.relay.send({ type: 'prompt', text });
+    }
+  }
+}
+
 function stopRecordingAndSend() {
+  if (!state.recording) return;
   setRecording(false);
-  const text = (pendingTranscript || prompt('Speech disabled in placeholder — type your prompt:') || '').trim();
+  if (recognition) {
+    try { recognition.stop(); } catch {}
+  }
+  const text = (finalText + interimText).trim();
+  els.talkBtnLabel.textContent = 'Tap to talk';
   if (!text) return;
   appendTurn('you', text);
   state.relay.send({ type: 'prompt', text });
