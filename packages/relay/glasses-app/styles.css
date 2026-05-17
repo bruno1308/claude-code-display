@@ -141,13 +141,14 @@ html, body {
 }
 
 .talk-btn.recording {
-  background: var(--danger);
-  animation: pulse 1.2s ease-in-out infinite;
+  background: rgba(58, 122, 254, 0.10);
+  color: var(--fg-primary);
+  animation: pulse 1.6s ease-in-out infinite;
 }
 
 @keyframes pulse {
-  0%, 100% { box-shadow: 0 0 0 3px var(--danger), 0 0 12px var(--danger); }
-  50%      { box-shadow: 0 0 0 6px var(--danger), 0 0 32px var(--danger); }
+  0%, 100% { box-shadow: 0 0 0 2px var(--accent), 0 0 12px var(--accent-glow); }
+  50%      { box-shadow: 0 0 0 4px var(--accent), 0 0 28px var(--accent-glow); }
 }
 
 .transcript {
