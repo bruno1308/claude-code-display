@@ -128,6 +128,10 @@ els.sendBtn.addEventListener('click', handleSendPress);
 // Tap-to-talk: send a trigger_record to the phone. If there's already a draft
 // pending, the new transcription will overwrite it (the phone sends a fresh
 // draft on completion).
+//
+// Watchdog: if the phone doesn't respond within 15s (no msg comes back via
+// the relay), the UI resets so the user can try again without restarting.
+let watchdogTimer = null;
 function handleTalkPress() {
   if (!state.relay) {
     setStatus('not connected');
@@ -136,6 +140,17 @@ function handleTalkPress() {
   if (state.recording) return;
   state.relay.send({ type: 'trigger_record' });
   setRecording(true);
+  if (watchdogTimer) clearTimeout(watchdogTimer);
+  watchdogTimer = setTimeout(() => {
+    if (state.recording) {
+      setRecording(false);
+      setStatus('phone did not respond — tap again');
+    }
+  }, 15000);
+}
+
+function clearWatchdog() {
+  if (watchdogTimer) { clearTimeout(watchdogTimer); watchdogTimer = null; }
 }
 
 // Send the pending draft as a real prompt → daemon types it into Claude.
@@ -166,9 +181,17 @@ function handleSendPress() {
 
   state.relay = connect({
     paired,
-    onStatus: setStatus,
+    onStatus: (text) => {
+      setStatus(text);
+      // If the relay dropped, reset any active recording so the UI isn't stuck.
+      if (text.startsWith('disconnected') && state.recording) {
+        clearWatchdog();
+        setRecording(false);
+      }
+    },
     onMessage: (obj) => {
       // Any decrypted msg from a peer means the round-trip is happening.
+      clearWatchdog();
       if (state.recording) setRecording(false);
       if (obj.type === 'draft' && typeof obj.text === 'string') {
         // Phone finished transcribing — show the text for confirmation.

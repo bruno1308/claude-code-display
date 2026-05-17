@@ -61,6 +61,7 @@ class RelayClient(
         val req = Request.Builder().url(url).build()
         ws = http.newWebSocket(req, object : WebSocketListener() {
             override fun onOpen(webSocket: WebSocket, response: Response) {
+                Log.d("RelayClient", "onOpen url=$url")
                 _status.tryEmit("connecting…")
                 val hello = JSONObject(mapOf(
                     "type" to "hello",
@@ -70,6 +71,7 @@ class RelayClient(
             }
 
             override fun onMessage(webSocket: WebSocket, text: String) {
+                Log.d("RelayClient", "recv: ${text.take(120)}")
                 val f = try { JSONObject(text) } catch (_: Throwable) { return }
                 when (f.optString("type")) {
                     "hello_ack", "peer_connect" -> {
@@ -96,6 +98,7 @@ class RelayClient(
             }
 
             override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
+                Log.d("RelayClient", "onClosed code=$code reason=$reason")
                 ws = null
                 if (stopped) return
                 val secs = (backoffMs / 1000).coerceAtLeast(1)
