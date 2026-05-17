@@ -33,11 +33,3 @@ child.onExit(({ exitCode }) => {
   if (process.stdin.isTTY) process.stdin.setRawMode(false);
   process.exit(exitCode ?? 0);
 });
-
-// SPIKE: after 10 seconds, programmatically inject a prompt
-setTimeout(() => {
-  console.error('\n[mw-claude spike] injecting test prompt in 1s...\n');
-  setTimeout(() => {
-    child.write('say hello in five words\r');
-  }, 1000);
-}, 10000);
