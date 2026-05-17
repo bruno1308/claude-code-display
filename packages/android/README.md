@@ -57,11 +57,17 @@ the WebSocket transport.
 ## Daily use
 
 1. Start the daemon on your PC: `node packages/mw-claude/dist/cli.js run`.
-2. Open the Android app on your phone — it auto-connects.
-3. Tap **Push to talk**, speak into the glasses, tap to stop.
-4. The transcript appears in the app and the prompt arrives in your
-   Claude TUI. Claude's reply renders on the glasses webapp display
-   (and in the phone transcript).
+2. Open the Android app on your phone once. A persistent notification
+   "Claude Display — paired & encrypted" appears.
+3. **Hands-free**: tap your fingers together (EMG select) or press
+   D-pad Enter on the glasses with the talk button focused. The phone
+   wakes up its mic, captures your voice, and ships the prompt. You
+   don't need to touch the phone.
+4. Both your prompt and Claude's reply appear on the glasses transcript
+   (and in the phone transcript / notification).
+5. The app/phone can be backgrounded or the screen locked — the
+   foreground service keeps the relay listener and audio pipeline alive.
+   Tap "Stop" on the notification to fully exit.
 
 ## Architecture notes
 

@@ -49,11 +49,26 @@ Production URL: `https://claude-display.brunofernandeslopes.workers.dev`.
 
 ## Pairing protocol
 
-See `packages/mw-claude/README.md`. Briefly: daemon prints a URL with
-`?p=<base64>` payload (channel ID, daemon pubkey, relay URL). Browser
-opens it, decodes, generates its own keypair, sends an unencrypted
-`hello` over the relay. Daemon replies with `hello_ack`. From that
-point on, all frames are encrypted `crypto_box` envelopes.
+See `packages/mw-claude/README.md`. The pair URL embeds a v2 payload:
+channel ID, daemon pubkey, and a **shared client keypair**. All paired
+devices (glasses webapp, Android phone app) import the same client
+identity, so the daemon only ever tracks one peer pubkey but multiple
+devices can simultaneously send and receive.
+
+## Wire protocol
+
+The DO broadcasts every WebSocket frame to all OTHER peers in the
+channel (sender excluded). Each peer dispatches by the inner msg
+`type` and ignores types it doesn't care about:
+
+| `type` | Sender | Receiver acts on | Receiver ignores |
+|---|---|---|---|
+| `prompt` | phone or laptop client | daemon types into Claude TUI; glasses webapp shows in transcript | (none) |
+| `reply` | daemon | clients render in transcript | (none) |
+| `trigger_record` | glasses webapp (Plan 5 hands-free) | phone fires push-to-talk | daemon |
+
+Control frames (`hello`, `hello_ack`, `peer_connect`, `peer_disconnect`)
+are unencrypted and managed by the DO + client `RelayClient`s.
 
 ## Adding the webapp to Meta Display Glasses
 
