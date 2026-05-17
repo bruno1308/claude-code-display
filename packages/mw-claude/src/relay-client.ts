@@ -64,17 +64,18 @@ export class RelayClient extends EventEmitter {
       this.emit('open');
       this.startHeartbeat();
     });
-    this.ws.on('pong', () => {
-      // Server is alive — clear the pong-deadline timer.
-      if (this.pongDeadline) {
-        clearTimeout(this.pongDeadline);
-        this.pongDeadline = null;
-      }
-    });
     this.ws.on('message', (raw) => {
       let frame: unknown;
       try { frame = JSON.parse(raw.toString()); } catch { return; }
       const f = frame as { type?: string };
+      if (f.type === 'pong') {
+        // DO is alive — clear the pong-deadline timer.
+        if (this.pongDeadline) {
+          clearTimeout(this.pongDeadline);
+          this.pongDeadline = null;
+        }
+        return;
+      }
       if (f.type === 'hello' || f.type === 'hello_ack' || f.type === 'peer_disconnect') {
         this.emit('control', frame);
       } else if (f.type === 'msg') {
@@ -107,8 +108,10 @@ export class RelayClient extends EventEmitter {
     this.stopHeartbeat();
     this.pingTimer = setInterval(() => {
       if (this.ws?.readyState !== WebSocket.OPEN) return;
-      try { this.ws.ping(); } catch {}
-      // If we don't hear back within 10s, assume dead and force a reconnect.
+      // App-level ping (NOT ws.ping()). Cloudflare's edge can intercept WS
+      // protocol pings and respond locally, which would mask a dead DO. An
+      // app-level ping forces the DO to respond via its message handler.
+      try { this.ws.send('{"type":"ping"}'); } catch {}
       this.pongDeadline = setTimeout(() => {
         try { this.ws?.terminate(); } catch {}
       }, 10000);
