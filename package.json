@@ -1,0 +1,12 @@
+{
+  "name": "claude-display",
+  "private": true,
+  "version": "0.0.0",
+  "workspaces": ["packages/*"],
+  "engines": { "node": ">=24" },
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "dev:mw-claude": "npm run dev -w packages/mw-claude"
+  }
+}
