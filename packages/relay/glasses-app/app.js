@@ -72,13 +72,12 @@ function setDraft(text) {
   rebuildFocusables();
 }
 
-// D-pad focus order. When a draft is pending, Send is included and gets default focus.
+// D-pad focus order. Only interactive elements — transcript is read-only and
+// excluded. When a draft is pending, Send is included and gets default focus.
 function rebuildFocusables() {
   const list = [els.talkBtn];
   if (state.pendingDraft != null) list.push(els.sendBtn);
-  list.push(els.transcript);
   state.focusables = list;
-  // Prefer focusing Send if a fresh draft just arrived.
   if (state.pendingDraft != null) {
     state.focusIndex = list.indexOf(els.sendBtn);
   } else {

@@ -108,7 +108,7 @@ html, body {
 .send-btn.focused {
   outline: none;
   transform: scale(0.95);
-  box-shadow: 0 0 0 3px #2da46c, 0 0 24px rgba(45, 164, 108, 0.7);
+  box-shadow: 0 0 0 3px var(--accent), 0 0 24px var(--accent-glow);
 }
 
 .send-btn.hidden { display: none; }
