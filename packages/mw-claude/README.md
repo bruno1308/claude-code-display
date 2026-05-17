@@ -6,12 +6,17 @@ encrypted Cloudflare relay.
 
 ## Status
 
-Plan 3 deliverable. The companion webapp at the relay URL is built for
-Meta Display Glasses (600×600 viewport, D-pad / EMG input, tap-to-talk via
-Web Speech API), and also works in any modern browser for laptop testing.
-End-to-end verified on real Display hardware. Web Speech availability on
-the Display browser is currently `service-not-allowed`; the Whisper
-fallback lands in Plan 4.
+Plan 4 deliverable. Three peers can pair to one channel:
+
+- **`mw-claude` daemon** on your PC (drives Claude Code).
+- **Glasses webapp** (renders Claude's reply on the Display).
+- **Android companion app** (`packages/android` — captures audio from the
+  glasses microphone via BT HFP, transcribes with `SpeechRecognizer`, sends
+  the prompt over the relay).
+
+The webapp also still works as a standalone client on any browser (laptop
+testing). Web Speech on the Display browser itself is `service-not-allowed`
+— that's why we go through the phone for voice input.
 
 ## Requirements
 

@@ -48,7 +48,10 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
-    implementation(libs.lazysodium.android)
+    implementation(libs.lazysodium.android) {
+        exclude(group = "net.java.dev.jna", module = "jna")
+    }
+    implementation("net.java.dev.jna:jna:5.13.0@aar")
     implementation(libs.okhttp)
     implementation(libs.androidx.security.crypto)
     testImplementation(libs.junit)

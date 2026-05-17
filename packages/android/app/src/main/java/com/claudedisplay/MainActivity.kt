@@ -15,6 +15,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.claudedisplay.audio.BluetoothScoController
@@ -55,7 +56,8 @@ fun MainScreen(ctx: Context, pairingUri: Uri?, modifier: Modifier = Modifier) {
     val capture = remember { SpeechCapture(ctx) }
 
     var paired by remember { mutableStateOf(store.load()) }
-    var status by remember { mutableStateOf("initializing…") }
+    var relayStatus by remember { mutableStateOf("initializing…") }
+    var uiStatus by remember { mutableStateOf<String?>(null) }
     var transcript by remember { mutableStateOf<List<Pair<String, String>>>(emptyList()) }
     var relay by remember { mutableStateOf<RelayClient?>(null) }
     var recording by remember { mutableStateOf(false) }
@@ -80,27 +82,39 @@ fun MainScreen(ctx: Context, pairingUri: Uri?, modifier: Modifier = Modifier) {
             if (payload != null) {
                 store.save(payload)
                 paired = payload
-                status = "paired — connecting"
+                relayStatus = "paired — connecting"
             } else {
-                status = "pairing URI invalid (need v2)"
+                relayStatus = "pairing URI invalid (need v2)"
             }
         }
     }
 
-    // Open relay client once paired.
-    LaunchedEffect(paired) {
-        val p = paired ?: return@LaunchedEffect
+    // Open relay client once paired. DisposableEffect tears down the old client
+    // when `paired` changes (e.g. re-pairing via a new ?p=... URL), so we never
+    // end up with two RelayClients each delivering replies into the transcript.
+    DisposableEffect(paired) {
+        val p = paired
+        if (p == null) {
+            onDispose { }
+            return@DisposableEffect onDispose { }
+        }
         val client = RelayClient(
             relayUrl = p.relayUrl,
             channelId = p.channelId,
             keys = PeerKeys(p.clientPriv, p.daemonPub, p.clientPub),
         )
-        relay = client
-        scope.launch { client.status.collect { status = it } }
-        scope.launch { client.replies.collect { reply ->
+        val statusJob = scope.launch { client.status.collect { relayStatus = it } }
+        val replyJob = scope.launch { client.replies.collect { reply ->
             transcript = transcript + ("claude" to reply)
         }}
         client.start()
+        relay = client
+        onDispose {
+            statusJob.cancel()
+            replyJob.cancel()
+            client.stop()
+            if (relay === client) relay = null
+        }
     }
 
     if (paired == null) {
@@ -110,13 +124,14 @@ fun MainScreen(ctx: Context, pairingUri: Uri?, modifier: Modifier = Modifier) {
             Text("mw-claude pair --relay-url wss://…/api/ws",
                 style = MaterialTheme.typography.bodySmall)
             Text("Then open the printed URL on this phone — Android will offer Claude Display as an opener.")
-            Text("Status: $status", style = MaterialTheme.typography.bodySmall)
+            Text("Status: $relayStatus", style = MaterialTheme.typography.bodySmall)
         }
         return
     }
 
     Column(modifier.padding(24.dp).fillMaxSize(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Text(status, style = MaterialTheme.typography.bodySmall)
+        Text("relay: $relayStatus", style = MaterialTheme.typography.bodySmall)
+        uiStatus?.let { Text(it, style = MaterialTheme.typography.bodySmall) }
 
         Button(
             onClick = {
@@ -128,26 +143,32 @@ fun MainScreen(ctx: Context, pairingUri: Uri?, modifier: Modifier = Modifier) {
                 } else {
                     scope.launch {
                         val ok = sco.start()
-                        if (!ok) { status = "BT SCO failed"; return@launch }
-                        if (!capture.isAvailable()) { status = "SR unavailable"; sco.stop(); return@launch }
+                        if (!ok) { uiStatus = "BT SCO failed"; return@launch }
+                        if (!capture.isAvailable()) { uiStatus = "SR unavailable"; sco.stop(); return@launch }
                         capture.onPartial = { talkLabel = "… $it" }
                         capture.onFinal = { text ->
                             sco.stop()
                             recording = false
                             talkLabel = "Push to talk"
+                            uiStatus = null
                             transcript = transcript + ("you" to text)
-                            relay?.send(JSONObject(mapOf("type" to "prompt", "text" to text)))
+                            val r = relay
+                            if (r == null) {
+                                uiStatus = "relay not connected — prompt not sent"
+                            } else {
+                                r.send(JSONObject(mapOf("type" to "prompt", "text" to text)))
+                            }
                         }
                         capture.onError = { code ->
                             sco.stop()
                             recording = false
                             talkLabel = "Push to talk"
-                            status = "SR error $code"
+                            uiStatus = "SR error $code"
                         }
                         capture.start()
                         recording = true
                         talkLabel = "Listening… tap to stop"
-                        status = "listening (glasses mic)…"
+                        uiStatus = "listening (glasses mic)…"
                     }
                 }
             },
