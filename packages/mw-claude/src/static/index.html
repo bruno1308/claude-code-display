@@ -36,20 +36,31 @@
       log.scrollTop = log.scrollHeight;
     }
 
-    const ws = new WebSocket('ws://' + location.host + '/ws');
-    ws.onopen = () => { status.textContent = 'connected'; };
-    ws.onclose = () => { status.textContent = 'disconnected — refresh to reconnect'; };
-    ws.onmessage = (e) => {
-      try {
-        const msg = JSON.parse(e.data);
-        if (msg.type === 'reply') append('turn-claude', 'claude: ' + msg.text);
-      } catch {}
-    };
+    let ws;
+    let backoff = 500;
+
+    function connect() {
+      ws = new WebSocket('ws://' + location.host + '/ws');
+      ws.onopen = () => { status.textContent = 'connected'; backoff = 500; };
+      ws.onclose = () => {
+        status.textContent = 'disconnected — reconnecting in ' + Math.round(backoff/1000) + 's';
+        setTimeout(connect, backoff);
+        backoff = Math.min(backoff * 2, 10000);
+      };
+      ws.onerror = () => { try { ws.close(); } catch {} };
+      ws.onmessage = (e) => {
+        try {
+          const msg = JSON.parse(e.data);
+          if (msg.type === 'reply') append('turn-claude', 'claude: ' + msg.text);
+        } catch {}
+      };
+    }
+    connect();
 
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       const text = input.value.trim();
-      if (!text || ws.readyState !== WebSocket.OPEN) return;
+      if (!text || !ws || ws.readyState !== WebSocket.OPEN) return;
       ws.send(JSON.stringify({ type: 'prompt', text }));
       append('turn-user', 'you: ' + text);
       input.value = '';
