@@ -121,7 +121,7 @@ Use your deploy's URL (e.g. `https://claude-display.<your-subdomain>.workers.dev
 
 ## Status
 
-Works end-to-end on Pixel 8 Pro + Ray-Ban Display Glasses + Windows 11 + Cloudflare Workers. Built over 6 incremental design plans (see [`docs/superpowers/plans`](docs/superpowers/plans/)).
+Works end-to-end on Pixel 8 Pro + Ray-Ban Display Glasses + Windows 11 + Cloudflare Workers. Built incrementally across 6 design plans.
 
 Known limitations:
 - **Captouch single-tap doesn't activate** on the Display — platform behavior. Use EMG pinch (one gesture = activate) or captouch double-tap.
