@@ -1,0 +1,17 @@
+# wrangler 4.0
+name = "claude-display"
+main = "src/worker.ts"
+compatibility_date = "2026-01-15"
+compatibility_flags = ["nodejs_compat"]
+
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+
+[[durable_objects.bindings]]
+name = "CHANNELS"
+class_name = "Channel"
+
+[[migrations]]
+tag = "v1"
+new_classes = ["Channel"]
