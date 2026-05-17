@@ -41,25 +41,67 @@ All three peers share one **channel ID + shared client keypair** baked into a si
 - **[`packages/relay`](packages/relay/)** — Cloudflare Worker hosting the WebSocket relay (Durable Object) AND the static glasses webapp.
 - **[`packages/android`](packages/android/)** — Kotlin/Compose Android app that captures audio from the glasses mic and ships transcripts to the relay. Runs as a foreground service so the phone can be stashed in your pocket.
 
-## Quick start (fork → deploy → use)
+## Quick start
 
-This project is per-user — each fork deploys its own Cloudflare Worker and signs its own Android APK. You'll need:
+You'll need:
 
-- Cloudflare account (free tier works)
 - Android Studio + an Android 10+ phone
-- Meta Ray-Ban Display Glasses + the Meta AI app with **Developer Mode enabled**
+- Meta Ray-Ban Display Glasses + the Meta AI app with **Developer Mode enabled** ([how](https://wearables.developer.meta.com/docs/develop/webapps/setup/#enabling-developer-mode-in-the-meta-ai-app))
 - Node 24+ on Windows/macOS/Linux for the daemon
 - A working `claude` CLI on PATH (your Claude Code subscription)
 
 ### 1. Clone + install
 
 ```bash
-git clone https://github.com/<your-fork>/claude-code-display.git
+git clone https://github.com/bruno1308/claude-code-display.git
 cd claude-code-display
 npm install
 ```
 
-### 2. Deploy your own relay
+### 2. Install the daemon CLI
+
+```bash
+cd packages/mw-claude
+npm link
+```
+
+You now have a global `ccdisplay` command (and `mw-claude` alias) on PATH.
+
+### 3. Build + install the Android app
+
+```bash
+cd ../android
+./gradlew installDebug
+```
+
+(Needs a phone connected via ADB.)
+
+### 4. Pair everything against the public relay
+
+On your PC:
+
+```bash
+ccdisplay pair --relay-url wss://claude-display.brunofernandeslopes.workers.dev/api/ws
+```
+
+The daemon prints **two URLs**:
+
+- An **https://** URL for the glasses webapp — paste into Meta AI app → Devices → Display Glasses → App connections → Web apps → Add a web app.
+- A **claude-display://** URL + QR for the Android app — scan the QR with your phone camera, Android opens the Claude Display app and auto-pairs.
+
+(Both URLs encode the same channel + shared keypair.)
+
+### 5. Run the daemon + use it
+
+```bash
+ccdisplay run
+```
+
+The Claude TUI takes over your terminal. The phone shows a persistent "Claude Display — paired & encrypted" notification. Tap EMG (or D-pad) on the glasses, speak, see Claude's reply on the display.
+
+## Self-hosting (optional)
+
+The public relay at `claude-display.brunofernandeslopes.workers.dev` is multi-tenant — each user gets their own random channel and the relay only sees ciphertext. If you'd rather run your own:
 
 ```bash
 npm i -g wrangler
@@ -67,62 +109,7 @@ wrangler login
 npm run deploy -w packages/relay
 ```
 
-Note the deployed URL (e.g. `https://claude-display.<your-subdomain>.workers.dev`). You'll need it for the next steps.
-
-### 3. Update the Android intent filter for App Links
-
-Edit `packages/android/app/src/main/AndroidManifest.xml` — change the `android:host` in the App Link `intent-filter` to YOUR Worker subdomain.
-
-Get your app's debug SHA-256 fingerprint:
-
-```bash
-cd packages/android
-./gradlew signingReport | grep "SHA-256" | head -1
-```
-
-Edit `packages/relay/glasses-app/.well-known/assetlinks.json` with your fingerprint and your package name. Redeploy:
-
-```bash
-cd ..
-npm run deploy -w packages/relay
-```
-
-### 4. Build + install the Android app
-
-```bash
-cd packages/android
-./gradlew installDebug
-```
-
-### 5. Install the daemon CLI
-
-```bash
-cd packages/mw-claude
-npm link
-```
-
-This gives you a global `ccdisplay` command (and `mw-claude` alias).
-
-### 6. Pair everything
-
-On your PC:
-
-```bash
-ccdisplay pair --relay-url wss://claude-display.<your-subdomain>.workers.dev/api/ws
-```
-
-You get a QR code + URL. Then:
-
-- **Phone**: scan the QR with the phone camera. Android opens the Claude Display app (because App Links is verified). Pairs automatically.
-- **Glasses**: in Meta AI app → Devices → Display Glasses → App connections → Web apps → Add a web app. Paste the same URL. Open the webapp on the glasses.
-
-### 7. Run the daemon + use it
-
-```bash
-ccdisplay run
-```
-
-The Claude TUI takes over your terminal. The phone shows a persistent "Claude Display — paired & encrypted" notification. Tap EMG (or D-pad) on the glasses, speak, see Claude's reply on the display.
+Use your deploy's URL (e.g. `https://claude-display.<your-subdomain>.workers.dev`) wherever the public URL above is referenced.
 
 ## Security model
 

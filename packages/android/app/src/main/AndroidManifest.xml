@@ -31,14 +31,18 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <intent-filter android:autoVerify="true">
+            <!--
+                Custom scheme for cross-deploy pairing. The daemon prints a
+                claude-display://pair?p=... URL alongside the https one;
+                scanning that QR on a phone opens this app directly without
+                needing Digital Asset Links verification tied to a specific
+                signing keystore.
+            -->
+            <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="https"
-                    android:host="claude-display.brunofernandeslopes.workers.dev"
-                    android:pathPattern="/.*" />
+                <data android:scheme="claude-display" />
             </intent-filter>
         </activity>
 

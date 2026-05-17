@@ -34,22 +34,29 @@ export async function runPair(opts: PairOpts): Promise<Config> {
     relay_url: opts.relayUrl,
   };
   const payloadStr = JSON.stringify(payload);
+  const payloadB64 = encodeURIComponent(
+    sodium.to_base64(sodium.from_string(payloadStr), sodium.base64_variants.URLSAFE_NO_PADDING),
+  );
   const webUrl =
     opts.relayUrl.replace(/^wss?:/, (m) => (m === 'wss:' ? 'https:' : 'http:')).replace('/api/ws', '') +
-    '/?p=' +
-    encodeURIComponent(
-      sodium.to_base64(sodium.from_string(payloadStr), sodium.base64_variants.URLSAFE_NO_PADDING),
-    );
+    '/?p=' + payloadB64;
+  // claude-display:// is intercepted by the Android app (custom scheme).
+  // Useful when the user signs the APK with their own keystore — no
+  // Digital Asset Links / SHA-256 fingerprint pinning required.
+  const appUrl = `claude-display://pair?p=${payloadB64}`;
 
-  process.stdout.write('\nScan this QR with your phone or glasses to pair:\n\n');
+  process.stdout.write('\nFor the GLASSES webapp — paste this URL in Meta AI → Devices → Web apps:\n\n');
+  process.stdout.write(`  ${webUrl}\n\n`);
+
+  process.stdout.write('For the ANDROID app — scan this QR with the phone camera:\n\n');
   await new Promise<void>((resolve) =>
-    qrcode.generate(webUrl, { small: true }, (qr) => {
+    qrcode.generate(appUrl, { small: true }, (qr) => {
       process.stdout.write(qr + '\n');
       resolve();
     }),
   );
-  process.stdout.write(`Or open this URL in a browser:\n${webUrl}\n\n`);
-  process.stdout.write('Note: the same URL can be used to pair multiple devices to this channel.\n\n');
+  process.stdout.write(`Or open this URL on the phone: ${appUrl}\n\n`);
+  process.stdout.write('Both URLs encode the same pairing — multiple devices can join the same channel.\n\n');
 
   // No handshake wait — the daemon already knows the client's pubkey (it generated it).
   // We can save the config immediately and exit. The browser/phone will connect on its own
