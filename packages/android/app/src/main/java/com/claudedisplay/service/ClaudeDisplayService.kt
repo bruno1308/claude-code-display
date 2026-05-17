@@ -149,6 +149,9 @@ class ClaudeDisplayService : Service() {
             ServiceState.talkLabel.value = "Listening… tap to stop"
             ServiceState.uiHint.value = "listening (glasses mic)…"
             updateNotification()
+            // Tell other peers (the glasses webapp) that the phone is now actively
+            // listening, so they can show "Speak now" instead of the waiting state.
+            relay?.send(JSONObject(mapOf("type" to "phone_state", "state" to "listening")))
         }
     }
 

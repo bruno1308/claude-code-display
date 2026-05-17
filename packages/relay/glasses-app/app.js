@@ -48,7 +48,7 @@ function appendTurn(kind, text) {
 function setRecording(on, label) {
   state.recording = on;
   els.talkBtn.classList.toggle('recording', on);
-  els.talkBtnLabel.textContent = label ?? (on ? 'Asked phone to listen…' : (state.pendingDraft ? 'Re-record' : 'Tap to talk'));
+  els.talkBtnLabel.textContent = label ?? (on ? 'Waiting for phone to listen…' : (state.pendingDraft ? 'Re-record' : 'Tap to talk'));
 }
 
 function setDraft(text) {
@@ -90,7 +90,14 @@ function applyFocus() {
   state.focusables.forEach((el, i) => {
     el.classList.toggle('focused', i === state.focusIndex);
   });
-  state.focusables[state.focusIndex]?.focus();
+  // Defer the .focus() call so it lands after the current event loop / DOM
+  // updates. Without this, the very first focus on page load can miss if
+  // the document isn't fully ready, and the Display's EMG tap goes to
+  // nowhere — requiring a second tap to activate.
+  const target = state.focusables[state.focusIndex];
+  if (target) {
+    requestAnimationFrame(() => target.focus());
+  }
 }
 
 function moveFocus(delta) {
@@ -192,6 +199,13 @@ function handleSendPress() {
     onMessage: (obj) => {
       // Any decrypted msg from a peer means the round-trip is happening.
       clearWatchdog();
+      if (obj.type === 'phone_state' && obj.state === 'listening') {
+        // Phone is now actively recording — keep the recording UI on but
+        // change the label so the user knows to start speaking.
+        if (!state.recording) setRecording(true);
+        els.talkBtnLabel.textContent = 'Speak now';
+        return;
+      }
       if (state.recording) setRecording(false);
       if (obj.type === 'draft' && typeof obj.text === 'string') {
         // Phone finished transcribing — show the text for confirmation.
