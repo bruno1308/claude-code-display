@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>mw-claude local</title>
+  <style>
+    body { font-family: ui-monospace, monospace; max-width: 900px; margin: 2rem auto; padding: 0 1rem; background:#0b0d10; color:#e7e7e7; }
+    #log { white-space: pre-wrap; border:1px solid #2a2f36; padding:1rem; border-radius:8px; min-height:300px; max-height:60vh; overflow:auto; background:#10141a; }
+    .turn-user { color:#9ad0ff; margin-top:1rem; }
+    .turn-claude { color:#e7e7e7; margin-top:0.5rem; }
+    #form { display:flex; gap:0.5rem; margin-top:1rem; }
+    #prompt { flex:1; padding:0.6rem; border-radius:6px; border:1px solid #2a2f36; background:#10141a; color:#e7e7e7; font-family:inherit; }
+    button { padding:0.6rem 1rem; border-radius:6px; border:0; background:#3a7afe; color:white; cursor:pointer; }
+    #status { font-size:0.85rem; color:#7a8597; margin-bottom:0.5rem; }
+  </style>
+</head>
+<body>
+  <h1>mw-claude</h1>
+  <div id="status">connecting…</div>
+  <div id="log"></div>
+  <form id="form">
+    <input id="prompt" autocomplete="off" placeholder="Type a prompt for Claude Code…" autofocus />
+    <button type="submit">Send</button>
+  </form>
+  <script>
+    const log = document.getElementById('log');
+    const status = document.getElementById('status');
+    const form = document.getElementById('form');
+    const input = document.getElementById('prompt');
+
+    function append(cls, text) {
+      const div = document.createElement('div');
+      div.className = cls;
+      div.textContent = text;
+      log.appendChild(div);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    const ws = new WebSocket('ws://' + location.host + '/ws');
+    ws.onopen = () => { status.textContent = 'connected'; };
+    ws.onclose = () => { status.textContent = 'disconnected — refresh to reconnect'; };
+    ws.onmessage = (e) => {
+      try {
+        const msg = JSON.parse(e.data);
+        if (msg.type === 'reply') append('turn-claude', 'claude: ' + msg.text);
+      } catch {}
+    };
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const text = input.value.trim();
+      if (!text || ws.readyState !== WebSocket.OPEN) return;
+      ws.send(JSON.stringify({ type: 'prompt', text }));
+      append('turn-user', 'you: ' + text);
+      input.value = '';
+    });
+  </script>
+</body>
+</html>

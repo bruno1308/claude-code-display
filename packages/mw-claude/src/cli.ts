@@ -1,10 +1,9 @@
 import process from 'node:process';
-import fs from 'node:fs';
 import { PtySession } from './pty-session.js';
+import { LocalServer } from './local-server.js';
+import { segmentReplies } from './output-parser.js';
 
-const captureArgIndex = process.argv.indexOf('--capture');
-const capturePath = captureArgIndex >= 0 ? process.argv[captureArgIndex + 1] : null;
-const captureStream = capturePath ? fs.createWriteStream(capturePath) : null;
+const PORT = Number(process.env.MW_CLAUDE_PORT ?? 7878);
 
 const session = new PtySession({
   cwd: process.cwd(),
@@ -12,9 +11,17 @@ const session = new PtySession({
   rows: process.stdout.rows,
 });
 
+const server = new LocalServer(PORT);
+
+const segmenter = segmentReplies((text) => server.sendReply(text));
+
 session.on('data', (chunk: string) => {
   process.stdout.write(chunk);
-  captureStream?.write(chunk);
+  segmenter.feed(chunk);
+});
+
+server.on('prompt', (text: string) => {
+  session.write(text + '\r');
 });
 
 if (process.stdin.isTTY) process.stdin.setRawMode(true);
@@ -24,7 +31,11 @@ process.stdout.on('resize', () =>
 );
 
 session.on('exit', (code: number) => {
-  captureStream?.end();
+  segmenter.flush();
   if (process.stdin.isTTY) process.stdin.setRawMode(false);
   process.exit(code);
+});
+
+server.start().then(() => {
+  process.stderr.write(`[mw-claude] local UI on http://127.0.0.1:${PORT}\n`);
 });

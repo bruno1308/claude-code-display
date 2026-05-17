@@ -5,7 +5,7 @@
   "bin": { "mw-claude": "./bin/mw-claude.js" },
   "main": "./dist/cli.js",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json && node -e \"require('node:fs').cpSync('src/static','dist/static',{recursive:true})\"",
     "dev": "tsx src/cli.ts",
     "test": "vitest run"
   },
