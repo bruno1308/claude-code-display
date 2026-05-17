@@ -33,6 +33,8 @@ class RelayClient(
     private var ws: WebSocket? = null
     @Volatile private var stopped = false
     @Volatile private var backoffMs = 500L
+    private var pingJob: kotlinx.coroutines.Job? = null
+    private var pongDeadlineJob: kotlinx.coroutines.Job? = null
 
     private val _status = MutableSharedFlow<String>(replay = 1, extraBufferCapacity = 8)
     val status: SharedFlow<String> = _status
@@ -68,12 +70,17 @@ class RelayClient(
                     "client_pub" to keys.myPubB64,
                 )).toString()
                 webSocket.send(hello)
+                startHeartbeat(webSocket)
             }
 
             override fun onMessage(webSocket: WebSocket, text: String) {
                 Log.d("RelayClient", "recv: ${text.take(120)}")
                 val f = try { JSONObject(text) } catch (_: Throwable) { return }
                 when (f.optString("type")) {
+                    "pong" -> {
+                        pongDeadlineJob?.cancel()
+                        pongDeadlineJob = null
+                    }
                     "hello_ack", "peer_connect" -> {
                         backoffMs = 500
                         _status.tryEmit("paired & encrypted")
@@ -99,6 +106,7 @@ class RelayClient(
 
             override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
                 Log.d("RelayClient", "onClosed code=$code reason=$reason")
+                stopHeartbeat()
                 ws = null
                 if (stopped) return
                 val secs = (backoffMs / 1000).coerceAtLeast(1)
@@ -112,8 +120,37 @@ class RelayClient(
 
             override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
                 Log.e("RelayClient", "ws error", t)
+                stopHeartbeat()
                 webSocket.close(1011, "error")
             }
         })
+    }
+
+    /**
+     * App-level ping/pong via the DO. OkHttp's WS protocol pings get pongs
+     * from Cloudflare's edge proxy (not the DO), so they can't detect a
+     * server-side DO drop. Sending an app-level ping forces the DO to respond,
+     * proving the WS is end-to-end alive.
+     */
+    private fun startHeartbeat(webSocket: WebSocket) {
+        stopHeartbeat()
+        pingJob = scope.launch {
+            while (true) {
+                delay(20_000)
+                if (stopped) return@launch
+                webSocket.send("""{"type":"ping"}""")
+                pongDeadlineJob = scope.launch {
+                    delay(10_000)
+                    // No pong within 10s → force a close so reconnect kicks in.
+                    Log.w("RelayClient", "no pong — forcing reconnect")
+                    try { webSocket.close(1001, "no pong") } catch (_: Throwable) {}
+                }
+            }
+        }
+    }
+
+    private fun stopHeartbeat() {
+        pingJob?.cancel(); pingJob = null
+        pongDeadlineJob?.cancel(); pongDeadlineJob = null
     }
 }
