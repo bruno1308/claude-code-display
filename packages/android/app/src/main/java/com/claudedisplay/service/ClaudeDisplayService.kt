@@ -27,7 +27,10 @@ class ClaudeDisplayService : Service() {
         const val ACTION_TRIGGER = "com.claudedisplay.service.TRIGGER"
     }
 
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    // SpeechRecognizer requires the main thread. RelayClient (OkHttp WS) and
+    // BluetoothScoController are both thread-safe so running everything on Main
+    // is fine and simplifies dispatcher juggling.
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private lateinit var sco: BluetoothScoController
     private lateinit var capture: SpeechCapture
     private var relay: RelayClient? = null

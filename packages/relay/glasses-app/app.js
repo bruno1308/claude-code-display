@@ -122,7 +122,9 @@ function handleTalkPress() {
       // Any decrypted msg from a peer means our trigger landed and the phone
       // is doing its job (or has finished). Reset the recording UI.
       if (state.recording) setRecording(false);
-      if (obj.type === 'reply' && typeof obj.text === 'string') {
+      if (obj.type === 'prompt' && typeof obj.text === 'string') {
+        appendTurn('you', obj.text);
+      } else if (obj.type === 'reply' && typeof obj.text === 'string') {
         appendTurn('claude', obj.text);
       }
     },
