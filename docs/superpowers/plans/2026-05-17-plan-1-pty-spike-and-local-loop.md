@@ -6,7 +6,7 @@
 
 **Architecture:** A single Node CLI (`mw-claude`) spawns `claude` under a Windows ConPTY via `node-pty`, mirrors the PTY to the user's terminal in both directions, runs an embedded HTTP+WebSocket server on `localhost`, and serves a tiny static HTML page that lets you type a prompt, ship it through the WS into the child PTY's stdin, and stream sanitized assistant text back.
 
-**Tech Stack:** Node.js 24 LTS, TypeScript, `node-pty` (`@homebridge/node-pty-prebuilt-multiarch` for prebuilt Windows binaries), `ws` (WebSocket server), `ansi-regex`, `vitest` for tests, `tsx` for dev runs.
+**Tech Stack:** Node.js 24 LTS, TypeScript, `node-pty` (Microsoft official, N-API based, ships Windows prebuilts), `ws` (WebSocket server), `ansi-regex`, `vitest` for tests, `tsx` for dev runs.
 
 **Prerequisite:** Claude Code (`claude`) is installed and signed in on the PC. Test by running `claude` in a terminal manually — you should land in the interactive TUI.
 
@@ -161,7 +161,7 @@ Write to `packages/mw-claude/package.json`:
     "test": "vitest run"
   },
   "dependencies": {
-    "@homebridge/node-pty-prebuilt-multiarch": "^0.11.14",
+    "node-pty": "^0.11.14",
     "ansi-regex": "^6.1.0",
     "ws": "^8.18.0"
   },
@@ -248,7 +248,7 @@ git commit -m "feat(mw-claude): scaffold package with tsx + vitest"
 Replace entire contents of `packages/mw-claude/src/cli.ts`:
 
 ```ts
-import * as pty from '@homebridge/node-pty-prebuilt-multiarch';
+import * as pty from 'node-pty';
 import process from 'node:process';
 
 const shell = process.platform === 'win32' ? 'claude.cmd' : 'claude';
@@ -342,7 +342,7 @@ git commit -m "feat(mw-claude): PTY spike — wrap claude in node-pty on Windows
 Write to `packages/mw-claude/src/pty-session.ts`:
 
 ```ts
-import * as pty from '@homebridge/node-pty-prebuilt-multiarch';
+import * as pty from 'node-pty';
 import { EventEmitter } from 'node:events';
 
 export interface PtySessionEvents {
