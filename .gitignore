@@ -6,3 +6,16 @@ dist/
 !.env.example
 .DS_Store
 Thumbs.db
+
+# Wrangler transients
+.wrangler/
+
+# Android
+packages/android/.gradle/
+packages/android/build/
+packages/android/app/build/
+packages/android/local.properties
+packages/android/.idea/
+packages/android/captures/
+packages/android/*.iml
+packages/android/app/*.iml
