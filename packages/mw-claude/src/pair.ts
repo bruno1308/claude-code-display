@@ -30,9 +30,9 @@ export async function runPair(opts: PairOpts): Promise<Config> {
       sodium.to_base64(sodium.from_string(payloadStr), sodium.base64_variants.URLSAFE_NO_PADDING),
     );
 
-  process.stdout.write('\nScan this QR with the Claude Display client:\n\n');
+  process.stdout.write('\nScan this QR with your phone to pair:\n\n');
   await new Promise<void>((resolve) =>
-    qrcode.generate(payloadStr, { small: true }, (qr) => {
+    qrcode.generate(webUrl, { small: true }, (qr) => {
       process.stdout.write(qr + '\n');
       resolve();
     }),
