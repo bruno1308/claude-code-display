@@ -46,10 +46,16 @@ export class Channel {
   }
 
   async webSocketMessage(ws: WebSocket, message: string | ArrayBuffer): Promise<void> {
-    // Broadcast to every other peer in the channel — sender excluded.
-    // Lets clients reach clients (e.g. glasses webapp's trigger_record → phone)
-    // in addition to the existing client↔daemon flow. Each peer dispatches by
-    // the inner msg `type` and ignores anything it doesn't care about.
+    // Special-case app-level ping: respond with pong only to the sender.
+    // Used by browser clients (which can't issue WS protocol pings) to keep
+    // their connection alive and detect dead WSs.
+    if (typeof message === 'string') {
+      if (message === '{"type":"ping"}' || message.startsWith('{"type":"ping"')) {
+        try { ws.send('{"type":"pong"}'); } catch {}
+        return;
+      }
+    }
+    // Broadcast everything else to every other peer in the channel.
     const all = this.state.getWebSockets();
     for (const t of all) {
       if (t === ws) continue;
