@@ -16,6 +16,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.claudedisplay.audio.BluetoothScoController
+import com.claudedisplay.audio.SpeechCapture
 import com.claudedisplay.ui.theme.ClaudeDisplayTheme
 import kotlinx.coroutines.launch
 import java.io.File
@@ -102,5 +103,27 @@ fun SpikeUI(ctx: Context, activity: ComponentActivity, modifier: Modifier = Modi
         ) { Text("Stop") }
 
         lastFile?.let { Text("Saved: ${it.absolutePath} (${it.length()} bytes)") }
+
+        HorizontalDivider()
+        Text("SpeechRecognizer over BT HFP", style = MaterialTheme.typography.titleMedium)
+        var transcript by remember { mutableStateOf("") }
+        val capture = remember { SpeechCapture(ctx) }
+        Button(
+            onClick = {
+                scope.launch {
+                    transcript = ""
+                    status = "starting SCO for SR…"
+                    val ok = sco.start()
+                    if (!ok) { status = "SCO failed (SR)"; return@launch }
+                    if (!capture.isAvailable()) { status = "SR unavailable"; sco.stop(); return@launch }
+                    capture.onPartial = { transcript = it; status = "partial: $it" }
+                    capture.onFinal = { transcript = it; status = "final: $it"; sco.stop() }
+                    capture.onError = { code -> status = "SR error code $code"; sco.stop() }
+                    capture.start()
+                    status = "listening…"
+                }
+            }
+        ) { Text("Recognize (glasses mic)") }
+        Text("Transcript: $transcript")
     }
 }
