@@ -5,7 +5,6 @@
   "bin": { "mw-claude": "./bin/mw-claude.js" },
   "main": "./dist/cli.js",
   "scripts": {
-    "postinstall": "node -e \"try { require('node:fs').copyFileSync(require.resolve('libsodium/dist/modules-esm/libsodium.mjs'), require.resolve('libsodium-wrappers/dist/modules-esm/libsodium.mjs')); } catch (e) {}\"",
     "build": "tsc -p tsconfig.json && node -e \"require('node:fs').cpSync('src/static','dist/static',{recursive:true})\"",
     "dev": "tsx src/cli.ts",
     "test": "vitest run"
