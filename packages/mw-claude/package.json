@@ -5,6 +5,7 @@
   "bin": { "mw-claude": "./bin/mw-claude.js" },
   "main": "./dist/cli.js",
   "scripts": {
+    "postinstall": "node -e \"try { require('node:fs').copyFileSync(require.resolve('libsodium/dist/modules-esm/libsodium.mjs'), require.resolve('libsodium-wrappers/dist/modules-esm/libsodium.mjs')); } catch (e) {}\"",
     "build": "tsc -p tsconfig.json && node -e \"require('node:fs').cpSync('src/static','dist/static',{recursive:true})\"",
     "dev": "tsx src/cli.ts",
     "test": "vitest run"
@@ -12,11 +13,13 @@
   "dependencies": {
     "node-pty": "^1.0.0",
     "ansi-regex": "^6.1.0",
-    "ws": "^8.18.0"
+    "ws": "^8.18.0",
+    "libsodium-wrappers": "^0.7.15"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
     "@types/ws": "^8.5.13",
+    "@types/libsodium-wrappers": "^0.7.14",
     "tsx": "^4.19.0",
     "typescript": "^5.7.0",
     "vitest": "^2.1.0"
