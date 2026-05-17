@@ -1,11 +1,7 @@
 import * as pty from 'node-pty';
 import process from 'node:process';
-import * as path from 'node:path';
-import * as os from 'node:os';
 
-const shell = process.platform === 'win32'
-  ? path.join(os.homedir(), '.local', 'bin', 'claude.exe')
-  : 'claude';
+const shell = process.platform === 'win32' ? 'claude.exe' : 'claude';
 
 const child = pty.spawn(shell, [], {
   name: 'xterm-256color',
