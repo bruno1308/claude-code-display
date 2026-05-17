@@ -89,6 +89,41 @@ fun MainScreen(ctx: Context, pairingUri: Uri?, modifier: Modifier = Modifier) {
         }
     }
 
+    // Extracted: starts the SCO + SR pipeline. Used by the button onClick AND
+    // by the trigger_record handler so glasses-side EMG/D-pad taps also fire it.
+    fun startPushToTalk() {
+        scope.launch {
+            if (recording) return@launch  // ignore re-triggers while already recording
+            val ok = sco.start()
+            if (!ok) { uiStatus = "BT SCO failed"; return@launch }
+            if (!capture.isAvailable()) { uiStatus = "SR unavailable"; sco.stop(); return@launch }
+            capture.onPartial = { talkLabel = "… $it" }
+            capture.onFinal = { text ->
+                sco.stop()
+                recording = false
+                talkLabel = "Push to talk"
+                uiStatus = null
+                transcript = transcript + ("you" to text)
+                val r = relay
+                if (r == null) {
+                    uiStatus = "relay not connected — prompt not sent"
+                } else {
+                    r.send(JSONObject(mapOf("type" to "prompt", "text" to text)))
+                }
+            }
+            capture.onError = { code ->
+                sco.stop()
+                recording = false
+                talkLabel = "Push to talk"
+                uiStatus = "SR error $code"
+            }
+            capture.start()
+            recording = true
+            talkLabel = "Listening… tap to stop"
+            uiStatus = "listening (glasses mic)…"
+        }
+    }
+
     // Open relay client once paired. DisposableEffect tears down the old client
     // when `paired` changes (e.g. re-pairing via a new ?p=... URL), so we never
     // end up with two RelayClients each delivering replies into the transcript.
@@ -107,11 +142,13 @@ fun MainScreen(ctx: Context, pairingUri: Uri?, modifier: Modifier = Modifier) {
         val replyJob = scope.launch { client.replies.collect { reply ->
             transcript = transcript + ("claude" to reply)
         }}
+        val triggerJob = scope.launch { client.triggers.collect { startPushToTalk() } }
         client.start()
         relay = client
         onDispose {
             statusJob.cancel()
             replyJob.cancel()
+            triggerJob.cancel()
             client.stop()
             if (relay === client) relay = null
         }
@@ -136,40 +173,11 @@ fun MainScreen(ctx: Context, pairingUri: Uri?, modifier: Modifier = Modifier) {
         Button(
             onClick = {
                 if (recording) {
-                    // stop & send
                     recording = false
                     capture.stop()
                     sco.stop()
                 } else {
-                    scope.launch {
-                        val ok = sco.start()
-                        if (!ok) { uiStatus = "BT SCO failed"; return@launch }
-                        if (!capture.isAvailable()) { uiStatus = "SR unavailable"; sco.stop(); return@launch }
-                        capture.onPartial = { talkLabel = "… $it" }
-                        capture.onFinal = { text ->
-                            sco.stop()
-                            recording = false
-                            talkLabel = "Push to talk"
-                            uiStatus = null
-                            transcript = transcript + ("you" to text)
-                            val r = relay
-                            if (r == null) {
-                                uiStatus = "relay not connected — prompt not sent"
-                            } else {
-                                r.send(JSONObject(mapOf("type" to "prompt", "text" to text)))
-                            }
-                        }
-                        capture.onError = { code ->
-                            sco.stop()
-                            recording = false
-                            talkLabel = "Push to talk"
-                            uiStatus = "SR error $code"
-                        }
-                        capture.start()
-                        recording = true
-                        talkLabel = "Listening… tap to stop"
-                        uiStatus = "listening (glasses mic)…"
-                    }
+                    startPushToTalk()
                 }
             },
             modifier = Modifier.fillMaxWidth().height(72.dp)

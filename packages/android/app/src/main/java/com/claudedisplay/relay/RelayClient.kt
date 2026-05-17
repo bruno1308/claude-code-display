@@ -38,6 +38,8 @@ class RelayClient(
     val status: SharedFlow<String> = _status
     private val _replies = MutableSharedFlow<String>(extraBufferCapacity = 32)
     val replies: SharedFlow<String> = _replies
+    private val _triggers = MutableSharedFlow<Unit>(extraBufferCapacity = 32)
+    val triggers: SharedFlow<Unit> = _triggers
 
     fun start() { openOnce() }
 
@@ -81,8 +83,10 @@ class RelayClient(
                             val pt = CryptoEnvelope.decrypt(ct, keys.peerPubB64, keys.mySecretB64)
                             val obj = JSONObject(pt)
                             _status.tryEmit("paired & encrypted")
-                            if (obj.optString("type") == "reply") {
-                                _replies.tryEmit(obj.optString("text"))
+                            when (obj.optString("type")) {
+                                "reply" -> _replies.tryEmit(obj.optString("text"))
+                                "trigger_record" -> _triggers.tryEmit(Unit)
+                                // ignore unknown types
                             }
                         } catch (t: Throwable) {
                             _status.tryEmit("decrypt error: ${t.message}")

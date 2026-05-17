@@ -41,10 +41,10 @@ function appendTurn(kind, text) {
   els.transcript.scrollTop = els.transcript.scrollHeight;
 }
 
-function setRecording(on) {
+function setRecording(on, label) {
   state.recording = on;
   els.talkBtn.classList.toggle('recording', on);
-  els.talkBtnLabel.textContent = on ? 'Listening… tap to send' : 'Tap to talk';
+  els.talkBtnLabel.textContent = label ?? (on ? 'Asked phone to listen…' : 'Tap to talk');
 }
 
 // D-pad: Up/Down toggles focus between talk button and transcript.
@@ -88,85 +88,18 @@ document.addEventListener('keydown', (e) => {
 
 els.talkBtn.addEventListener('click', handleTalkPress);
 
+// Plan 5: hands-free trigger. Tapping the talk button (EMG, D-pad Enter, or
+// click) sends a trigger_record control message; the phone receives it and
+// runs the SR pipeline. Local Web Speech API is unavailable on the Display
+// browser, so we don't attempt it.
 function handleTalkPress() {
   if (!state.relay) {
     setStatus('not connected');
     return;
   }
-  if (!state.recording) {
-    startRecording();
-  } else {
-    stopRecordingAndSend();
-  }
-}
-
-// Web Speech API integration with fallback.
-const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-let recognition = null;
-let interimText = '';
-let finalText = '';
-
-if (SR) {
-  recognition = new SR();
-  recognition.continuous = true;
-  recognition.interimResults = true;
-  recognition.lang = navigator.language || 'en-US';
-
-  recognition.onresult = (event) => {
-    interimText = '';
-    finalText = '';
-    for (let i = event.resultIndex; i < event.results.length; i++) {
-      const transcript = event.results[i][0].transcript;
-      if (event.results[i].isFinal) finalText += transcript;
-      else interimText += transcript;
-    }
-    els.talkBtnLabel.textContent = (finalText + interimText).trim() || 'Listening…';
-  };
-
-  recognition.onerror = (event) => {
-    setStatus('speech error: ' + event.error);
-    setRecording(false);
-  };
-
-  recognition.onend = () => {
-    if (state.recording) {
-      stopRecordingAndSend();
-    }
-  };
-}
-
-function startRecording() {
-  finalText = '';
-  interimText = '';
+  if (state.recording) return;  // ignore re-press while phone is recording
+  state.relay.send({ type: 'trigger_record' });
   setRecording(true);
-  if (recognition) {
-    try {
-      recognition.start();
-    } catch (err) {
-      setStatus('speech start error: ' + err.message);
-      setRecording(false);
-    }
-  } else {
-    setRecording(false);
-    const text = (prompt('Type your prompt (speech not supported here):') || '').trim();
-    if (text) {
-      appendTurn('you', text);
-      state.relay.send({ type: 'prompt', text });
-    }
-  }
-}
-
-function stopRecordingAndSend() {
-  if (!state.recording) return;
-  setRecording(false);
-  if (recognition) {
-    try { recognition.stop(); } catch {}
-  }
-  const text = (finalText + interimText).trim();
-  els.talkBtnLabel.textContent = 'Tap to talk';
-  if (!text) return;
-  appendTurn('you', text);
-  state.relay.send({ type: 'prompt', text });
 }
 
 // Boot.
@@ -186,6 +119,9 @@ function stopRecordingAndSend() {
     paired,
     onStatus: setStatus,
     onMessage: (obj) => {
+      // Any decrypted msg from a peer means our trigger landed and the phone
+      // is doing its job (or has finished). Reset the recording UI.
+      if (state.recording) setRecording(false);
       if (obj.type === 'reply' && typeof obj.text === 'string') {
         appendTurn('claude', obj.text);
       }
