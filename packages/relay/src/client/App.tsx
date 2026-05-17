@@ -118,6 +118,7 @@ export function App() {
           try {
             const pt = decrypt(f.ct);
             const m = JSON.parse(pt);
+            setStatus('paired & encrypted');
             if (m.type === 'reply') setLog((l) => [...l, { kind: 'claude', text: m.text }]);
           } catch {}
         }
