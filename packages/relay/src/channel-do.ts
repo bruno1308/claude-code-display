@@ -27,10 +27,16 @@ export class Channel {
     const [clientSide, serverSide] = Object.values(pair) as [WebSocket, WebSocket];
     this.state.acceptWebSocket(serverSide, [role]);
 
-    // Notify the existing peer (if any) that someone has joined.
+    // Two notifications: tell the existing peer we joined, and tell us if a
+    // peer is already present (so a refreshing client learns about an
+    // already-running daemon, not just the other way around).
     const otherRole: Role = role === 'client' ? 'daemon' : 'client';
-    for (const t of this.state.getWebSockets(otherRole)) {
+    const peerSockets = this.state.getWebSockets(otherRole);
+    for (const t of peerSockets) {
       try { t.send(JSON.stringify({ type: 'peer_connect', role })); } catch {}
+    }
+    if (peerSockets.length > 0) {
+      try { serverSide.send(JSON.stringify({ type: 'peer_connect', role: otherRole })); } catch {}
     }
 
     return new Response(null, { status: 101, webSocket: clientSide });
