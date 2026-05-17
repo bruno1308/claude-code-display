@@ -1,35 +1,21 @@
-import * as pty from 'node-pty';
 import process from 'node:process';
+import { PtySession } from './pty-session.js';
 
-const shell = process.platform === 'win32' ? 'claude.exe' : 'claude';
-
-const child = pty.spawn(shell, [], {
-  name: 'xterm-256color',
-  cols: process.stdout.columns ?? 120,
-  rows: process.stdout.rows ?? 30,
+const session = new PtySession({
   cwd: process.cwd(),
-  env: process.env as Record<string, string>,
+  cols: process.stdout.columns,
+  rows: process.stdout.rows,
 });
 
-// child -> parent terminal
-child.onData((data) => {
-  process.stdout.write(data);
-});
+session.on('data', (chunk: string) => process.stdout.write(chunk));
 
-// parent terminal -> child
-if (process.stdin.isTTY) {
-  process.stdin.setRawMode(true);
-}
-process.stdin.on('data', (chunk) => {
-  child.write(chunk.toString());
-});
+if (process.stdin.isTTY) process.stdin.setRawMode(true);
+process.stdin.on('data', (chunk) => session.write(chunk.toString()));
+process.stdout.on('resize', () =>
+  session.resize(process.stdout.columns ?? 120, process.stdout.rows ?? 30),
+);
 
-// resize forwarding
-process.stdout.on('resize', () => {
-  child.resize(process.stdout.columns ?? 120, process.stdout.rows ?? 30);
-});
-
-child.onExit(({ exitCode }) => {
+session.on('exit', (code: number) => {
   if (process.stdin.isTTY) process.stdin.setRawMode(false);
-  process.exit(exitCode ?? 0);
+  process.exit(code);
 });

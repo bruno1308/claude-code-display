@@ -1,0 +1,37 @@
+import * as pty from 'node-pty';
+import { EventEmitter } from 'node:events';
+
+export interface PtySessionEvents {
+  data: (chunk: string) => void;
+  exit: (code: number) => void;
+}
+
+export class PtySession extends EventEmitter {
+  private child: pty.IPty;
+
+  constructor(opts: { cwd?: string; cols?: number; rows?: number }) {
+    super();
+    const shell = process.platform === 'win32' ? 'claude.exe' : 'claude';
+    this.child = pty.spawn(shell, [], {
+      name: 'xterm-256color',
+      cols: opts.cols ?? 120,
+      rows: opts.rows ?? 30,
+      cwd: opts.cwd ?? process.cwd(),
+      env: process.env as Record<string, string>,
+    });
+    this.child.onData((data) => this.emit('data', data));
+    this.child.onExit(({ exitCode }) => this.emit('exit', exitCode ?? 0));
+  }
+
+  write(text: string): void {
+    this.child.write(text);
+  }
+
+  resize(cols: number, rows: number): void {
+    this.child.resize(cols, rows);
+  }
+
+  kill(): void {
+    this.child.kill();
+  }
+}
