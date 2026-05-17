@@ -8,18 +8,29 @@ interface PairOpts {
   relayUrl: string;
 }
 
+/**
+ * Generates daemon and client keypairs, then prints a QR/URL encoding both.
+ * Every paired device (glasses webapp, phone app, future peers) uses the SAME
+ * client keypair embedded in the payload, so the daemon only ever tracks one
+ * peer public key. Personal-use security trade-off chosen by user.
+ *
+ * Wire payload version: 2.
+ */
 export async function runPair(opts: PairOpts): Promise<Config> {
   await initCrypto();
-  const kp = generateKeyPair();
+  const daemonKp = generateKeyPair();
+  const clientKp = generateKeyPair();
   const channelId = sodium.to_base64(
     sodium.randombytes_buf(16),
     sodium.base64_variants.URLSAFE_NO_PADDING,
   );
 
   const payload = {
-    v: 1,
+    v: 2,
     channel_id: channelId,
-    daemon_pub: sodium.to_base64(kp.publicKey, sodium.base64_variants.ORIGINAL),
+    daemon_pub: sodium.to_base64(daemonKp.publicKey, sodium.base64_variants.ORIGINAL),
+    client_pub: sodium.to_base64(clientKp.publicKey, sodium.base64_variants.ORIGINAL),
+    client_priv: sodium.to_base64(clientKp.privateKey, sodium.base64_variants.ORIGINAL),
     relay_url: opts.relayUrl,
   };
   const payloadStr = JSON.stringify(payload);
@@ -30,7 +41,7 @@ export async function runPair(opts: PairOpts): Promise<Config> {
       sodium.to_base64(sodium.from_string(payloadStr), sodium.base64_variants.URLSAFE_NO_PADDING),
     );
 
-  process.stdout.write('\nScan this QR with your phone to pair:\n\n');
+  process.stdout.write('\nScan this QR with your phone or glasses to pair:\n\n');
   await new Promise<void>((resolve) =>
     qrcode.generate(webUrl, { small: true }, (qr) => {
       process.stdout.write(qr + '\n');
@@ -38,43 +49,18 @@ export async function runPair(opts: PairOpts): Promise<Config> {
     }),
   );
   process.stdout.write(`Or open this URL in a browser:\n${webUrl}\n\n`);
+  process.stdout.write('Note: the same URL can be used to pair multiple devices to this channel.\n\n');
 
-  const client = new RelayClient({
-    relayUrl: opts.relayUrl,
-    channelId,
-    role: 'daemon',
-    myKeyPair: kp,
-    peerPublicKey: null,
-  });
-
-  process.stdout.write('Waiting for the client (5 min timeout)…\n');
-
-  const peerPub = await new Promise<Uint8Array>((resolve, reject) => {
-    const timeout = setTimeout(() => {
-      client.stop();
-      reject(new Error('Pairing timed out after 5 minutes'));
-    }, 5 * 60 * 1000);
-    client.on('control', (frame: { type: string; client_pub?: string }) => {
-      if (frame.type === 'hello' && frame.client_pub) {
-        clearTimeout(timeout);
-        const pub = sodium.from_base64(frame.client_pub, sodium.base64_variants.ORIGINAL);
-        client.setPeerPublicKey(pub);
-        client.sendRaw(JSON.stringify({ type: 'hello_ack' }));
-        resolve(pub);
-      }
-    });
-    client.on('error', (err) => process.stderr.write(`[pair] relay error: ${err}\n`));
-    client.start();
-  });
-
-  client.stop();
+  // No handshake wait — the daemon already knows the client's pubkey (it generated it).
+  // We can save the config immediately and exit. The browser/phone will connect on its own
+  // when the URL is opened.
 
   return {
     version: 1,
     relayUrl: opts.relayUrl,
     channelId,
-    daemonPublicKey: sodium.to_base64(kp.publicKey, sodium.base64_variants.ORIGINAL),
-    daemonPrivateKey: sodium.to_base64(kp.privateKey, sodium.base64_variants.ORIGINAL),
-    peerPublicKey: sodium.to_base64(peerPub, sodium.base64_variants.ORIGINAL),
+    daemonPublicKey: sodium.to_base64(daemonKp.publicKey, sodium.base64_variants.ORIGINAL),
+    daemonPrivateKey: sodium.to_base64(daemonKp.privateKey, sodium.base64_variants.ORIGINAL),
+    peerPublicKey: sodium.to_base64(clientKp.publicKey, sodium.base64_variants.ORIGINAL),
   };
 }

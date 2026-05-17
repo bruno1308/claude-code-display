@@ -29,7 +29,7 @@ export async function consumeUrlPairing() {
   try {
     const json = atob(b64UrlToB64(p));
     payload = JSON.parse(json);
-    if (payload.v !== 1) throw new Error('unsupported pairing version');
+    if (payload.v !== 1 && payload.v !== 2) throw new Error('unsupported pairing version ' + payload.v);
   } catch (err) {
     return { error: 'pairing payload invalid: ' + err.message };
   }
@@ -41,14 +41,24 @@ export async function consumeUrlPairing() {
     return existing;
   }
 
-  // Fresh pairing — generate a new keypair.
-  const kp = await generateKeyPair();
+  // v2: keypair is embedded — shared across all devices paired to this channel.
+  // v1: generate a fresh keypair (legacy behavior).
+  let clientPub, clientPriv;
+  if (payload.v === 2) {
+    clientPub = payload.client_pub;
+    clientPriv = payload.client_priv;
+  } else {
+    const kp = await generateKeyPair();
+    clientPub = kp.publicKey;
+    clientPriv = kp.secretKey;
+  }
+
   const paired = {
     channelId: payload.channel_id,
     daemonPub: payload.daemon_pub,
     relayUrl: payload.relay_url,
-    clientPub: kp.publicKey,
-    clientPriv: kp.secretKey,
+    clientPub,
+    clientPriv,
     pairedAt: Date.now(),
   };
   localStorage.setItem(STORAGE_KEY, JSON.stringify(paired));

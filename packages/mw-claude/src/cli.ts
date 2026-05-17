@@ -22,8 +22,9 @@ async function cmdPair(): Promise<void> {
   }
   const cfg = await runPair({ relayUrl });
   new ConfigStore().save(cfg);
-  process.stdout.write('\n[mw-claude] Paired! Config saved to ~/.mw-claude/config.json\n');
-  process.stdout.write('[mw-claude] Run `mw-claude` (no args) to start the claude session.\n');
+  process.stdout.write('[mw-claude] Config saved to ~/.mw-claude/config.json\n');
+  process.stdout.write('[mw-claude] Open the URL above on each device you want paired (glasses, phone).\n');
+  process.stdout.write('[mw-claude] Then run `mw-claude` (no args) to start the claude session.\n');
 }
 
 async function cmdRun(): Promise<void> {

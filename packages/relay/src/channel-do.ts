@@ -18,9 +18,12 @@ export class Channel {
       return new Response('expected websocket upgrade', { status: 426 });
     }
 
-    // Single connection per role per channel. New connection replaces the old.
-    for (const old of this.state.getWebSockets(role)) {
-      try { old.close(4000, 'replaced'); } catch {}
+    // Daemon: single connection per channel (new replaces old).
+    // Client: multiple connections allowed (glasses webapp + phone app + ...).
+    if (role === 'daemon') {
+      for (const old of this.state.getWebSockets(role)) {
+        try { old.close(4000, 'replaced'); } catch {}
+      }
     }
 
     const pair = new WebSocketPair();
