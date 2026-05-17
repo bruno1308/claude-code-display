@@ -72,11 +72,13 @@ function setDraft(text) {
   rebuildFocusables();
 }
 
-// D-pad focus order. Only interactive elements — transcript is read-only and
-// excluded. When a draft is pending, Send is included and gets default focus.
+// D-pad focus order. Transcript is included so the user can scroll through
+// long Claude replies via D-pad/EMG. When a draft is pending, Send joins the
+// list and gets default focus.
 function rebuildFocusables() {
   const list = [els.talkBtn];
   if (state.pendingDraft != null) list.push(els.sendBtn);
+  list.push(els.transcript);
   state.focusables = list;
   if (state.pendingDraft != null) {
     state.focusIndex = list.indexOf(els.sendBtn);
@@ -108,6 +110,28 @@ function moveFocus(delta) {
 
 document.addEventListener('keydown', (e) => {
   if (state.focusables.length === 0) return;
+  const active = state.focusables[state.focusIndex];
+
+  // When the transcript is focused, Up/Down scrolls the list; Left/Right
+  // (or wrap-around) moves focus back to the buttons.
+  if (active === els.transcript) {
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      els.transcript.scrollBy({ top: -80, behavior: 'smooth' });
+      return;
+    }
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      els.transcript.scrollBy({ top: 80, behavior: 'smooth' });
+      return;
+    }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); moveFocus(-1); return; }
+    if (e.key === 'ArrowRight') { e.preventDefault(); moveFocus(1); return; }
+    if (e.key === 'Escape' || e.key === 'Backspace') { e.preventDefault(); state.focusIndex = 0; applyFocus(); return; }
+    return;
+  }
+
+  // Talk / Send buttons: arrows navigate, Enter activates.
   if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
     e.preventDefault();
     moveFocus(-1);
@@ -115,7 +139,6 @@ document.addEventListener('keydown', (e) => {
     e.preventDefault();
     moveFocus(1);
   } else if (e.key === 'Enter' || e.key === ' ') {
-    const active = state.focusables[state.focusIndex];
     if (active === els.talkBtn) {
       e.preventDefault();
       handleTalkPress();
