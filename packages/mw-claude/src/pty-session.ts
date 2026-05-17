@@ -12,7 +12,11 @@ export class PtySession extends EventEmitter {
   constructor(opts: { cwd?: string; cols?: number; rows?: number }) {
     super();
     const shell = process.platform === 'win32' ? 'claude.exe' : 'claude';
-    this.child = pty.spawn(shell, [], {
+    // --dangerously-skip-permissions: hands-free use means the user can't see
+    // or answer permission prompts from the glasses/phone. Set the env var
+    // CCDISPLAY_SAFE_MODE=1 to opt out and get the normal permission flow.
+    const args = process.env.CCDISPLAY_SAFE_MODE === '1' ? [] : ['--dangerously-skip-permissions'];
+    this.child = pty.spawn(shell, args, {
       name: 'xterm-256color',
       cols: opts.cols ?? 120,
       rows: opts.rows ?? 30,
