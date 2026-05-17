@@ -27,6 +27,12 @@ export class Channel {
     const [clientSide, serverSide] = Object.values(pair) as [WebSocket, WebSocket];
     this.state.acceptWebSocket(serverSide, [role]);
 
+    // Notify the existing peer (if any) that someone has joined.
+    const otherRole: Role = role === 'client' ? 'daemon' : 'client';
+    for (const t of this.state.getWebSockets(otherRole)) {
+      try { t.send(JSON.stringify({ type: 'peer_connect', role })); } catch {}
+    }
+
     return new Response(null, { status: 101, webSocket: clientSide });
   }
 

@@ -29,7 +29,7 @@ export function connect(opts) {
     ws.onmessage = async (e) => {
       let f;
       try { f = JSON.parse(String(e.data)); } catch { return; }
-      if (f.type === 'hello_ack') {
+      if (f.type === 'hello_ack' || f.type === 'peer_connect') {
         backoff = 500;
         onStatus('paired & encrypted');
       } else if (f.type === 'peer_disconnect') {
