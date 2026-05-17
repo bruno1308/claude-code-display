@@ -2,7 +2,7 @@ package com.claudedisplay
 
 import android.Manifest
 import android.content.Context
-import android.media.MediaRecorder
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,27 +11,35 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.claudedisplay.audio.BluetoothScoController
 import com.claudedisplay.audio.SpeechCapture
+import com.claudedisplay.pairing.PairedState
+import com.claudedisplay.pairing.PairingPayloadParser
+import com.claudedisplay.pairing.PairingStore
+import com.claudedisplay.relay.PeerKeys
+import com.claudedisplay.relay.RelayClient
 import com.claudedisplay.ui.theme.ClaudeDisplayTheme
 import kotlinx.coroutines.launch
-import java.io.File
+import org.json.JSONObject
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val pairingUri = intent?.data
         setContent {
             ClaudeDisplayTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    SpikeUI(
+                    MainScreen(
                         ctx = applicationContext,
-                        activity = this,
-                        modifier = Modifier.padding(innerPadding)
+                        pairingUri = pairingUri,
+                        modifier = Modifier.padding(innerPadding),
                     )
                 }
             }
@@ -40,12 +48,18 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun SpikeUI(ctx: Context, activity: ComponentActivity, modifier: Modifier = Modifier) {
+fun MainScreen(ctx: Context, pairingUri: Uri?, modifier: Modifier = Modifier) {
     val scope = rememberCoroutineScope()
-    var status by remember { mutableStateOf("idle") }
-    var lastFile by remember { mutableStateOf<File?>(null) }
+    val store = remember { PairingStore(ctx) }
     val sco = remember { BluetoothScoController(ctx) }
-    var recorder by remember { mutableStateOf<MediaRecorder?>(null) }
+    val capture = remember { SpeechCapture(ctx) }
+
+    var paired by remember { mutableStateOf(store.load()) }
+    var status by remember { mutableStateOf("initializing…") }
+    var transcript by remember { mutableStateOf<List<Pair<String, String>>>(emptyList()) }
+    var relay by remember { mutableStateOf<RelayClient?>(null) }
+    var recording by remember { mutableStateOf(false) }
+    var talkLabel by remember { mutableStateOf("Push to talk") }
 
     val permLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -59,71 +73,94 @@ fun SpikeUI(ctx: Context, activity: ComponentActivity, modifier: Modifier = Modi
         permLauncher.launch(needed.toTypedArray())
     }
 
-    Column(
-        modifier = modifier.padding(24.dp).fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        Text("HFP audio capture spike", style = MaterialTheme.typography.titleLarge)
-        Text("Status: $status")
-
-        Button(
-            onClick = {
-                scope.launch {
-                    status = "starting SCO…"
-                    val ok = sco.start()
-                    if (!ok) { status = "SCO failed"; return@launch }
-                    val file = File(ctx.filesDir, "spike-${System.currentTimeMillis()}.m4a")
-                    val rec = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        MediaRecorder(ctx)
-                    } else {
-                        @Suppress("DEPRECATION") MediaRecorder()
-                    }
-                    rec.setAudioSource(MediaRecorder.AudioSource.MIC)
-                    rec.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-                    rec.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
-                    rec.setOutputFile(file.absolutePath)
-                    rec.prepare()
-                    rec.start()
-                    recorder = rec
-                    lastFile = file
-                    status = "recording → ${file.name}"
-                }
+    // Consume incoming pairing URI on first composition.
+    LaunchedEffect(pairingUri) {
+        if (pairingUri != null) {
+            val payload = PairingPayloadParser.parseFromUri(pairingUri)
+            if (payload != null) {
+                store.save(payload)
+                paired = payload
+                status = "paired — connecting"
+            } else {
+                status = "pairing URI invalid (need v2)"
             }
-        ) { Text("Start") }
+        }
+    }
+
+    // Open relay client once paired.
+    LaunchedEffect(paired) {
+        val p = paired ?: return@LaunchedEffect
+        val client = RelayClient(
+            relayUrl = p.relayUrl,
+            channelId = p.channelId,
+            keys = PeerKeys(p.clientPriv, p.daemonPub, p.clientPub),
+        )
+        relay = client
+        scope.launch { client.status.collect { status = it } }
+        scope.launch { client.replies.collect { reply ->
+            transcript = transcript + ("claude" to reply)
+        }}
+        client.start()
+    }
+
+    if (paired == null) {
+        Column(modifier.padding(24.dp).fillMaxSize(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text("Not paired", style = MaterialTheme.typography.titleLarge)
+            Text("On your PC, run:")
+            Text("mw-claude pair --relay-url wss://…/api/ws",
+                style = MaterialTheme.typography.bodySmall)
+            Text("Then open the printed URL on this phone — Android will offer Claude Display as an opener.")
+            Text("Status: $status", style = MaterialTheme.typography.bodySmall)
+        }
+        return
+    }
+
+    Column(modifier.padding(24.dp).fillMaxSize(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Text(status, style = MaterialTheme.typography.bodySmall)
 
         Button(
             onClick = {
-                scope.launch {
-                    try { recorder?.stop(); recorder?.release() } catch (_: Throwable) {}
-                    recorder = null
+                if (recording) {
+                    // stop & send
+                    recording = false
+                    capture.stop()
                     sco.stop()
-                    status = "stopped → ${lastFile?.absolutePath ?: "(none)"}"
+                } else {
+                    scope.launch {
+                        val ok = sco.start()
+                        if (!ok) { status = "BT SCO failed"; return@launch }
+                        if (!capture.isAvailable()) { status = "SR unavailable"; sco.stop(); return@launch }
+                        capture.onPartial = { talkLabel = "… $it" }
+                        capture.onFinal = { text ->
+                            sco.stop()
+                            recording = false
+                            talkLabel = "Push to talk"
+                            transcript = transcript + ("you" to text)
+                            relay?.send(JSONObject(mapOf("type" to "prompt", "text" to text)))
+                        }
+                        capture.onError = { code ->
+                            sco.stop()
+                            recording = false
+                            talkLabel = "Push to talk"
+                            status = "SR error $code"
+                        }
+                        capture.start()
+                        recording = true
+                        talkLabel = "Listening… tap to stop"
+                        status = "listening (glasses mic)…"
+                    }
                 }
-            }
-        ) { Text("Stop") }
+            },
+            modifier = Modifier.fillMaxWidth().height(72.dp)
+        ) { Text(talkLabel, style = MaterialTheme.typography.titleMedium) }
 
-        lastFile?.let { Text("Saved: ${it.absolutePath} (${it.length()} bytes)") }
-
-        HorizontalDivider()
-        Text("SpeechRecognizer over BT HFP", style = MaterialTheme.typography.titleMedium)
-        var transcript by remember { mutableStateOf("") }
-        val capture = remember { SpeechCapture(ctx) }
-        Button(
-            onClick = {
-                scope.launch {
-                    transcript = ""
-                    status = "starting SCO for SR…"
-                    val ok = sco.start()
-                    if (!ok) { status = "SCO failed (SR)"; return@launch }
-                    if (!capture.isAvailable()) { status = "SR unavailable"; sco.stop(); return@launch }
-                    capture.onPartial = { transcript = it; status = "partial: $it" }
-                    capture.onFinal = { transcript = it; status = "final: $it"; sco.stop() }
-                    capture.onError = { code -> status = "SR error code $code"; sco.stop() }
-                    capture.start()
-                    status = "listening…"
-                }
+        Column(
+            modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            transcript.forEach { (kind, t) ->
+                Text("${kind.uppercase()}: $t")
             }
-        ) { Text("Recognize (glasses mic)") }
-        Text("Transcript: $transcript")
+        }
     }
 }
