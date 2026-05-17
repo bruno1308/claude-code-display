@@ -1,0 +1,227 @@
+[2J[m[H]0;C:\Users\RTZ-PC\.local\bin\claude.exe[?25h]0;claude[?25l[?2004h[?1004h[?2031h[>0q]0;✳ Claude Code[38;2;215;119;87m╭───[m [38;2;215;119;87mClaude[m [38;2;215;119;87mCode[m [38;2;153;153;153mv2.1.143[m [38;2;215;119;87m─────────────────────────────────────────────────────────────────────────────────────────────╮
+│[m[52X[38;2;215;119;87m[52C│[m [1m[38;2;215;119;87mTips[m [1m[38;2;215;119;87mfor[m [1m[38;2;215;119;87mgetting[m [1m[38;2;215;119;87mstarted[m[K[38;2;215;119;87m[40C│
+│[m[17X[1m[97m[17CWelcome[m [1m[97mback[m [1m[97mBruno![m[16X[38;2;215;119;87m[16C│[m Run /init to create a CLAUDE.md file with instructions for Cla… [38;2;215;119;87m│
+│[m[52X[38;2;215;119;87m[52C│[m [38;2;215;119;87m───────────────────────────────────────────────────────────────[m [38;2;215;119;87m│
+│[m[23X[38;2;215;119;87m[23C▐[48;2;0;0;0m▛███▜[49m▌[m[22X[38;2;215;119;87m[22C│[m [1m[38;2;215;119;87mWhat's[m [1m[38;2;215;119;87mnew[m[K[38;2;215;119;87m[54C│
+│[m[22X[38;2;215;119;87m[22C▝▜[48;2;0;0;0m█████[49m▛▘[m[21X[38;2;215;119;87m[21C│[m Added plugin dependency enforcement: `claude plugin disable` n… [38;2;215;119;87m│
+│[m[24X[38;2;215;119;87m[24C▘▘[m [38;2;215;119;87m▝▝[m[23X[38;2;215;119;87m[23C│[m Added projected context cost (per-turn and per-invocation toke… [38;2;215;119;87m│
+│[m   [38;2;153;153;153mOpus[m [38;2;153;153;153m4.7[m [38;2;153;153;153m(1M[m [38;2;153;153;153mcontext)[m [38;2;153;153;153mwith[m [38;2;153;153;153mme…[m [38;2;153;153;153m·[m [38;2;153;153;153mClaude[m [38;2;153;153;153mMax[m [38;2;153;153;153m·[m    [38;2;215;119;87m│[m Added `worktree.bgIsolation: "none"` setting to let background… [38;2;215;119;87m│
+│[m   [38;2;153;153;153mBruno[m [38;2;153;153;153mFernandes[m [38;2;153;153;153mLopes[m[28X[38;2;215;119;87m[28C│[m [3m[38;2;153;153;153m/release-notes[23m[m [3m[38;2;153;153;153mfor[23m[m [3m[38;2;153;153;153mmore[23m[m[K[38;2;215;119;87m[41C│
+│[m[13X[38;2;153;153;153m[13CB:\Projects\ClaudeDisplay[m[14X[38;2;215;119;87m[14C│[m[K[38;2;215;119;87m[65C│
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[m
+[K[38;2;136;136;136m
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[m
+> [30m[47mT[mry "create a util logging.py that..."[K[38;2;136;136;136m
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[m
+  [38;2;153;153;153m?[m [38;2;153;153;153mfor[m [38;2;153;153;153mshortcuts[m[83X[38;2;153;153;153m[83C◐[m [38;2;153;153;153mmedium[m [38;2;153;153;153m·[m [38;2;153;153;153m/effort[m  [30m[47m[14;3H [m[K[117C[14;3Hsay hello in exactly five words[30m[47m [38;2;136;136;136m[49m[15;3H────────────────────────────────[m[16;3H[15X[15C[17X[17C]0;⠂ Claude Code[38;2;80;80;80m[48;2;55;55;55m[13;1H> [38;2;255;255;255msay hello in exactly five words[39m[K[m
+[K[38;2;215;119;87m
+·[m [38;2;235;159;127mDi[38;2;215;119;87mlly-dallying… [m[K
+  [15X[15C[83X[83C[K[38;2;136;136;136m
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[38;2;153;153;153m
+> [30m[47m [m[K[38;2;136;136;136m
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[m
+  [38;2;153;153;153mesc[m [38;2;153;153;153mto[m [38;2;153;153;153minterrupt[m[82X[38;2;153;153;153m[82C◐[m [38;2;153;153;153mmedium[m [38;2;153;153;153m·[m [38;2;153;153;153m/effort[m  [38;2;215;119;87m[15;3HD[38;2;235;159;127mill[m[38;2;215;119;87m✢[m [38;2;215;119;87mDi[38;2;235;159;127mlly[m[38;2;215;119;87m[15;5Hl[38;2;235;159;127mly-[m[38;2;215;119;87m*[m [38;2;215;119;87mDilly[38;2;235;159;127m-da[m[38;2;215;119;87m[15;8H-[38;2;235;159;127mdal[m[38;2;215;119;87m✶[m [38;2;215;119;87mDilly-d[38;2;235;159;127mall[m[38;2;215;119;87m✻[m [38;2;215;119;87mDilly-dal[38;2;235;159;127mlyi[m[38;2;215;119;87m[15;12Hl[38;2;235;159;127myin[m[38;2;215;119;87m✽[m [38;2;215;119;87mDilly-dally[38;2;235;159;127ming[m[38;2;215;119;87m[15;14Hi[38;2;235;159;127mng…[m[38;2;215;119;87m[15;15Hn[m]0;⠂ Say hello in five words[38;2;215;119;87mg…[m[38;2;215;119;87m✻[m]0;⠐ Say hello in five words[38;2;215;119;87m✶[m[38;2;215;119;87m*[m[38;2;215;119;87m✢[m[38;2;215;119;87m·[m[38;2;215;119;87m✢[m[38;2;215;119;87m*[m[38;2;153;153;153m[17C(1s · ↓[m [38;2;153;153;153m1 tokens)[m[38;2;153;153;153m[15;27H2[m[38;2;215;119;87m✶[m[38;2;153;153;153m[25C3[m[38;2;255;255;255m●[m Hello there my dear friend.[K
+  [15X[15C[83X[83C[K[38;2;215;119;87m
+✶[m [38;2;215;119;87mDilly-dallying… [38;2;153;153;153m(1s · ↓[m [38;2;153;153;153m3 tokens)[m[K
+[K[38;2;136;136;136m
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[38;2;153;153;153m
+> [30m[47m [m[K[38;2;136;136;136m
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[m
+  [38;2;153;153;153mesc[m [38;2;153;153;153mto[m [38;2;153;153;153minterrupt[m[82X[38;2;153;153;153m[82C◐[m [38;2;153;153;153mmedium[m [38;2;153;153;153m·[m [38;2;153;153;153m/effort[m  [38;2;216;121;89m[17;3HDilly-dallying…[38;2;215;119;87m [38;2;153;153;153m(running stop hook · 1s · ↓[m [38;2;153;153;153m4 tokens)[m[38;2;215;119;87m✻[m [38;2;217;123;91mDilly-dallying…[38;2;215;119;87m [38;2;153;153;153m(running stop hook · 1s · ↓[m [38;2;153;153;153m5[m]0;⠂ Say hello in five words[38;2;219;127;95m[17;3HDilly-dallying…[38;2;215;119;87m [38;2;153;153;153m(running stop hook · 2[m[38;2;215;119;87m✽[m [38;2;220;130;98mDilly-dallying…[38;2;215;119;87m [38;2;153;153;153m(running stop hook · 2s · ↓[m [38;2;153;153;153m6[m[38;2;222;133;101m[17;3HDilly-dallying…[38;2;215;119;87m [38;2;153;153;153m(running stop hook · 2s · ↓[m [38;2;153;153;153m7[m[38;2;224;137;105m[17;3HDilly-dallying…[38;2;215;119;87m [38;2;153;153;153m(running stop hook · 2s · ↓[m [38;2;153;153;153m8[m[38;2;226;141;109m[17;3HDilly-dallying…[m[38;2;153;153;153m✻[m [38;2;153;153;153mBaked for 2s[m[K
+[K[38;2;136;136;136m
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[m
+> [30m[47m [m[K[38;2;136;136;136m
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[m
+  [38;2;153;153;153m? for shortcuts[m [82X[38;2;153;153;153m[82C◐[m [38;2;153;153;153mmedium[m [38;2;153;153;153m·[m [38;2;153;153;153m/effort[m  ]0;✳ Say hello in five words[20;3Hwhat is 2 plus 2[30m[47m [38;2;136;136;136m[49m[21;3H─────────────────[m[22;3H[16X[16C ]0;⠂ Say hello in five words[38;2;80;80;80m[48;2;55;55;55m[19;1H> [38;2;255;255;255mwhat is 2 plus 2[39m[K[m
+[K[38;2;215;119;87m
+·[m [38;2;215;119;87mHerding… [m[K[38;2;153;153;153m
+  ⎿  Tip: Use /statusline to set up a custom status line that will display beneath the input box[m    [K
+[K[38;2;136;136;136m
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[38;2;153;153;153m
+> [30m[47m [m[K[38;2;136;136;136m
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[m
+  [38;2;153;153;153mesc[m [38;2;153;153;153mto[m [38;2;153;153;153minterrupt[m[82X[38;2;153;153;153m[82C◐[m [38;2;153;153;153mmedium[m [38;2;153;153;153m·[m [38;2;153;153;153m/effort[m  [38;2;215;119;87m[21;1H✢[m [38;2;235;159;127mH[m[38;2;215;119;87m*[m [38;2;235;159;127mHe[m[38;2;215;119;87m[21;3HH[38;2;235;159;127merd[m[38;2;255;193;7m[27;68H69 skill descriptions dropped · /doctor for details[m[38;2;215;119;87m[21;1H✶[m [38;2;215;119;87mHe[38;2;235;159;127mrdi[m[38;2;215;119;87m[21;5Hr[38;2;235;159;127mdin[m[38;2;215;119;87m✻[m [38;2;215;119;87mHerd[38;2;235;159;127ming[m[38;2;215;119;87m[21;7Hin[38;2;235;159;127mg…[m[38;2;215;119;87m✽[m [38;2;215;119;87mHerding[m[38;2;215;119;87m…[m[38;2;215;119;87m✻[m[38;2;215;119;87m✶[m]0;⠐ Say hello in five words[38;2;215;119;87m*[m[38;2;215;119;87m✢[m[38;2;215;119;87m·[m[38;2;215;119;87m✢[m[38;2;235;159;127m[1CHe[m[38;2;215;119;87m*[m [38;2;235;159;127mHer[m[38;2;215;119;87m[21;3HH[38;2;235;159;127merd[m[38;2;215;119;87m✶[m [38;2;215;119;87mHe[38;2;235;159;127mrdi[m[38;2;215;119;87m[21;5Hrd[38;2;235;159;127ming[m[38;2;215;119;87m✻[m [38;2;215;119;87mHerdi[38;2;235;159;127mng…[m]0;⠂ Say hello in five words[38;2;215;119;87m[21;8Hn[m[38;2;215;119;87m✽[m [38;2;215;119;87mHerding…[m[38;2;215;119;87m✻[m[38;2;215;119;87m✶[m[38;2;215;119;87m*[m[38;2;215;119;87m✢[m[38;2;215;119;87m·[m]0;⠐ Say hello in five words[38;2;235;159;127m[1CH[m[38;2;215;119;87m✢[m [38;2;235;159;127mHe[m[38;2;215;119;87m*[m [38;2;215;119;87mH[38;2;235;159;127merd[m[38;2;215;119;87m[21;4He[38;2;235;159;127mrdi[m[38;2;215;119;87m✶[m [38;2;215;119;87mHerd[38;2;235;159;127ming[m[38;2;215;119;87m✻[m [38;2;215;119;87mHerdi[38;2;235;159;127mng…[m[38;2;215;119;87m[21;8Hng[m[38;2;215;119;87m✽[m [38;2;215;119;87mHerding…[m[25;3H/[30m[47m [m[14X[38;2;136;136;136m[26;3H────────────────[m[27;3H[16X[16C[38;2;177;185;249m/codex:rescue                                   (codex) Delegate investigation, an explicit fix request, or[m[K
+[48X[38;2;177;185;249m[48Cfollow-up[m [38;2;177;185;249mrescue[m [38;2;177;185;249mwork[m [38;2;177;185;249mto[m [38;2;177;185;249mthe[m [38;2;177;185;249mCodex[m [38;2;177;185;249mrescue[m [38;2;177;185;249msubagent[m[K[38;2;153;153;153m
+/brainstorming[m[34X[38;2;153;153;153m[34C(superpowers)[m [38;2;153;153;153mYou[m [38;2;153;153;153mMUST[m [38;2;153;153;153muse[m [38;2;153;153;153mthis[m [38;2;153;153;153mbefore[m [38;2;153;153;153many[m [38;2;153;153;153mcreative[m [38;2;153;153;153mwork[m [38;2;153;153;153m-[m [38;2;153;153;153mcreating[m     
+[48X[38;2;153;153;153m[48Cfeatures,[m [38;2;153;153;153mbuilding[m [38;2;153;153;153mcomponents,[m [38;2;153;153;153madding[m [38;2;153;153;153mfunctionality,[m [38;2;153;153;153mor[m [38;2;153;153;153mmodifying[m [38;2;153;153;153mb…[m    [38;2;153;153;153m
+/writing-plans[m[34X[38;2;153;153;153m[34C(superpowers)[m [38;2;153;153;153mUse[m [38;2;153;153;153mwhen[m [38;2;153;153;153myou[m [38;2;153;153;153mhave[m [38;2;153;153;153ma[m [38;2;153;153;153mspec[m [38;2;153;153;153mor[m [38;2;153;153;153mrequirements[m [38;2;153;153;153mfor[m [38;2;153;153;153ma[m[K
+[48X[38;2;153;153;153m[48Cmulti-step[m [38;2;153;153;153mtask,[m [38;2;153;153;153mbefore[m [38;2;153;153;153mtouching[m [38;2;153;153;153mcode[m[K[38;2;153;153;153m
+/subagent-driven-development[m[20X[38;2;153;153;153m[20C(superpowers)[m [38;2;153;153;153mUse[m [38;2;153;153;153mwhen[m [38;2;153;153;153mexecuting[m [38;2;153;153;153mimplementation[m [38;2;153;153;153mplans[m [38;2;153;153;153mwith[m[K
+[48X[38;2;153;153;153m[48Cindependent[m [38;2;153;153;153mtasks[m [38;2;153;153;153min[m [38;2;153;153;153mthe[m [38;2;153;153;153mcurrent[m [38;2;153;153;153msession[m[K[38;2;153;153;153m
+/create-image[m[35X[38;2;153;153;153m[35CGenerate[m [38;2;153;153;153mimages[m [38;2;153;153;153musing[m [38;2;153;153;153mOpenAI[m [38;2;153;153;153mand[m [38;2;153;153;153mGoogle[m [38;2;153;153;153mGemini[m [38;2;153;153;153mAPIs.[m [38;2;153;153;153mUse[m [38;2;153;153;153mthis[m [38;2;153;153;153mskill[m     
+[48X[38;2;153;153;153m[48Cwhenever[m [38;2;153;153;153myou[m [38;2;153;153;153mneed[m [38;2;153;153;153mto[m [38;2;153;153;153mgenerate,[m [38;2;153;153;153medit,[m [38;2;153;153;153mor[m [38;2;153;153;153mregenerate[m [38;2;153;153;153mart[m [38;2;153;153;153massets[m [38;2;153;153;153m—[m [38;2;153;153;153mspr…[m    [38;2;153;153;153m
+/add-dir[m[40X[38;2;153;153;153m[40CAdd[m [38;2;153;153;153ma[m [38;2;153;153;153mnew[m [38;2;153;153;153mworking[m [38;2;153;153;153mdirectory[m[K[38;2;153;153;153m
+/advisor[m[40X[38;2;153;153;153m[40CConfigure[m [38;2;153;153;153mthe[m [38;2;153;153;153mAdvisor[m [38;2;153;153;153mTool[m [38;2;153;153;153mto[m [38;2;153;153;153mconsult[m [38;2;153;153;153ma[m [38;2;153;153;153mstronger[m [38;2;153;153;153mmodel[m [38;2;153;153;153mfor[m [38;2;153;153;153mguidance[m     
+[48X[38;2;153;153;153m[48Cat[m [38;2;153;153;153mkey[m [38;2;153;153;153mmoments[m [38;2;153;153;153mduring[m [38;2;153;153;153ma[m [38;2;153;153;153mtask[m[K[38;2;153;153;153m
+/agents[m[41X[38;2;153;153;153m[41CManage[m [38;2;153;153;153magent[m [38;2;153;153;153mconfigurations[m[K[38;2;153;153;153m
+/autofix-pr[m[37X[38;2;153;153;153m[37CMonitor[m [38;2;153;153;153mand[m [38;2;153;153;153mautofix[m [38;2;153;153;153many[m [38;2;153;153;153missues[m [38;2;153;153;153mwith[m [38;2;153;153;153mthe[m [38;2;153;153;153mcurrent[m [38;2;153;153;153mPR[m[K[38;2;153;153;153m
+/background[m[37X[38;2;153;153;153m[37CSend[m [38;2;153;153;153mthis[m [38;2;153;153;153msession[m [38;2;153;153;153mto[m [38;2;153;153;153mthe[m [38;2;153;153;153mbackground[m [38;2;153;153;153mand[m [38;2;153;153;153mfree[m [38;2;153;153;153mthe[m [38;2;153;153;153mterminal[m[K[38;2;153;153;153m
+/branch[m[41X[38;2;153;153;153m[41CCreate[m [38;2;153;153;153ma[m [38;2;153;153;153mbranch[m [38;2;153;153;153mof[m [38;2;153;153;153mthe[m [38;2;153;153;153mcurrent[m [38;2;153;153;153mconversation[m [38;2;153;153;153mat[m [38;2;153;153;153mthis[m [38;2;153;153;153mpoint[m[K[38;2;153;153;153m
+/btw[m[44X[38;2;153;153;153m[44CAsk[m [38;2;153;153;153ma[m [38;2;153;153;153mquick[m [38;2;153;153;153mside[m [38;2;153;153;153mquestion[m [38;2;153;153;153mwithout[m [38;2;153;153;153minterrupting[m [38;2;153;153;153mthe[m [38;2;153;153;153mmain[m [38;2;153;153;153mconversation[m    [38;2;153;153;153m
+/chrome[m[41X[38;2;153;153;153m[41CClaude[m [38;2;153;153;153min[m [38;2;153;153;153mChrome[m [38;2;153;153;153m(beta)[m [38;2;153;153;153msettings[m[K[38;2;153;153;153m
+/clear[m[42X[38;2;153;153;153m[42CStart[m [38;2;153;153;153ma[m [38;2;153;153;153mnew[m [38;2;153;153;153msession[m [38;2;153;153;153mwith[m [38;2;153;153;153mempty[m [38;2;153;153;153mcontext;[m [38;2;153;153;153mprevious[m [38;2;153;153;153msession[m [38;2;153;153;153mstays[m [38;2;153;153;153mon[m       
+[48X[38;2;153;153;153m[48Cdisk[m [38;2;153;153;153m(resumable[m [38;2;153;153;153mwith[m [38;2;153;153;153m/resume)[m[K[38;2;153;153;153m
+/color[m[42X[38;2;153;153;153m[42CSet[m [38;2;153;153;153mthe[m [38;2;153;153;153mprompt[m [38;2;153;153;153mbar[m [38;2;153;153;153mcolor[m [38;2;153;153;153mfor[m [38;2;153;153;153mthis[m [38;2;153;153;153msession[m[K[38;2;153;153;153m
+/compact[m[40X[38;2;153;153;153m[40CFree[m [38;2;153;153;153mup[m [38;2;153;153;153mcontext[m [38;2;153;153;153mby[m [38;2;153;153;153msummarizing[m [38;2;153;153;153mthe[m [38;2;153;153;153mconversation[m [38;2;153;153;153mso[m [38;2;153;153;153mfar[m[K[38;2;153;153;153m
+/config[m[41X[38;2;153;153;153m[41COpen[m [38;2;153;153;153mconfig[m [38;2;153;153;153mpanel[m[K[55C
+[38;2;153;153;153m/context[m[40X[38;2;153;153;153m[40CVisualize[m [38;2;153;153;153mcurrent[m [38;2;153;153;153mcontext[m [38;2;153;153;153musage[m [38;2;153;153;153mas[m [38;2;153;153;153ma[m [38;2;153;153;153mcolored[m [38;2;153;153;153mgrid[m[K[23C
+[120C[23;4He[30m[47m [m[38;2;177;185;249m[25;1H/exit                                           Exit the CLI[m[K[38;2;153;153;153m
+/[38;2;177;185;249me[38;2;153;153;153mffort                                         S[38;2;177;185;249me[38;2;153;153;153mt effort level for model usage[m[K[38;2;153;153;153m
+/[38;2;177;185;249me[38;2;153;153;153mxport       [m[34X[38;2;177;185;249m[34CE[38;2;153;153;153mxport the current conversation[m [38;2;153;153;153mto a file or clipboard[m[K[38;2;153;153;153m
+/[38;2;177;185;249me[38;2;153;153;153mnv-vars                                       (v[38;2;177;185;249me[38;2;153;153;153mrcel) Vercel environment variable expert guidance. Use when[m[K
+[48X[38;2;153;153;153m[48Cworking with .[38;2;177;185;249me[38;2;153;153;153mnv[m [38;2;153;153;153mfiles, vercel[m [38;2;153;153;153menv commands, OIDC tokens,[m [38;2;153;153;153mor manag…[m    [38;2;153;153;153m
+/[38;2;177;185;249me[38;2;153;153;153mxtra-usage                                    Configur[38;2;177;185;249me[38;2;153;153;153m extra usage to keep working when limits are hit[m[K[38;2;153;153;153m
+/[38;2;177;185;249me[38;2;153;153;153mxecuting-plans[12X[m[12C[20X[38;2;153;153;153m[20C(sup[38;2;177;185;249me[38;2;153;153;153mrpowers)[m [38;2;153;153;153mUse[m [38;2;153;153;153mwhen[m [38;2;153;153;153myou have a written implementation plan to[m        
+[48X[38;2;177;185;249m[48Ce[38;2;153;153;153mxecute in a separate session with review checkpoints[m[K[38;2;153;153;153m
+/[38;2;177;185;249me[38;2;153;153;153mlevenlabs-audio[m[31X[38;2;153;153;153m[31CG[38;2;177;185;249me[38;2;153;153;153mnerate[m [38;2;153;153;153maudio assets[m [38;2;153;153;153musing the ElevenLabs API[m [38;2;153;153;153m— sound effects[m[K
+[48X[38;2;153;153;153m[48C(SFX), background[m [38;2;153;153;153mmusic, ambi[38;2;177;185;249me[38;2;153;153;153mnt tracks, and voice[m [38;2;153;153;153mlines (TTS).[m [38;2;153;153;153mUse…[m    [38;2;153;153;153m
+/cod[38;2;177;185;249me[38;2;153;153;153mx:rescue[m[35X[38;2;153;153;153m[35C(cod[38;2;177;185;249me[38;2;153;153;153mx) Delegate investigation, an explicit fix request, or[m[K
+[48X[38;2;153;153;153m[48Cfollow-up[m [38;2;153;153;153mr[38;2;177;185;249me[38;2;153;153;153mscue work[m [38;2;153;153;153mto the Codex rescue subagent[m[K[38;2;153;153;153m
+/brainstorming                                  (sup[38;2;177;185;249me[38;2;153;153;153mrpowers) You MUST use this before any creative work - creating[m     
+[48X[38;2;153;153;153m[48Cf[38;2;177;185;249me[38;2;153;153;153matures, building components, adding functionality, or modifying b…[m    [38;2;153;153;153m
+/writing-plans[m[34X[38;2;153;153;153m[34C(sup[38;2;177;185;249me[38;2;153;153;153mrpowers) Use when you have a spec or requirements for a[m[K
+[48X[38;2;153;153;153m[48Cmulti-st[38;2;177;185;249me[38;2;153;153;153mp task, before touching code[m[K[38;2;153;153;153m
+/subag[38;2;177;185;249me[38;2;153;153;153mnt-driven-development[m[20X[38;2;153;153;153m[20C(sup[38;2;177;185;249me[38;2;153;153;153mrpowers) Use when[m [38;2;153;153;153mexecuting implementation plans with[m[K
+[48X[38;2;153;153;153m[48Cind[38;2;177;185;249me[38;2;153;153;153mpendent[m [38;2;153;153;153mtasks in the current session[m[K[38;2;153;153;153m
+/cr[38;2;177;185;249me[38;2;153;153;153mate-image[m[35X[38;2;153;153;153m[35CG[38;2;177;185;249me[38;2;153;153;153mnerate images using OpenAI and Google Gemini APIs. Use this skill[m     
+[48X[38;2;153;153;153m[48Cwh[38;2;177;185;249me[38;2;153;153;153mnever you need to generate,[m [38;2;153;153;153medit, or[m [38;2;153;153;153mregenerate art assets — spr…[m    [38;2;153;153;153m
+/syst[38;2;177;185;249me[38;2;153;153;153mmatic-debugging                           (sup[38;2;177;185;249me[38;2;153;153;153mrpowers) Use when encountering any bug, test failure, or[m[K
+[48X[38;2;153;153;153m[48Cun[38;2;177;185;249me[38;2;153;153;153mxpected behavior, before proposing fixes[m[K[38;2;153;153;153m
+/finishing-a-d[38;2;177;185;249me[38;2;153;153;153mvelopment-branch[m[17X[38;2;153;153;153m[17C(sup[38;2;177;185;249me[38;2;153;153;153mrpowers) Use when implementation is complete,[m [38;2;153;153;153mall tests pass,[m      
+[48X[38;2;153;153;153m[48Cand you n[38;2;177;185;249me[38;2;153;153;153med to decide how to integrate the work - guides completio…[m    
+[K[120C[38;2;215;119;87m[19;1H✻[m[23;5Hx[30m[47m [m[38;2;153;153;153m[26;1H/[38;2;177;185;249mex[38;2;153;153;153mport[41X[38;2;177;185;249m[41CEx[38;2;153;153;153mport the current conversation to a file or clipboard[m[K[38;2;153;153;153m
+/[38;2;177;185;249mex[38;2;153;153;153mtra-usage  [m[34X[38;2;153;153;153m[34CConfigure [38;2;177;185;249mex[38;2;153;153;153mtra usage to keep working when limits are hit[m[K[38;2;153;153;153m
+/[38;2;177;185;249mex[38;2;153;153;153mecuting-plans                                (superpowers) Use when you have a written implementation plan to[m        
+[48X[38;2;177;185;249m[48Cex[38;2;153;153;153mecute in a separate session with review checkpoints[m[K[38;2;153;153;153m
+/cod[38;2;177;185;249mex[38;2;153;153;153m:rescue                                   (cod[38;2;177;185;249mex[38;2;153;153;153m) Delegate investigation, an explicit fix request, or[m[K
+[48X[38;2;153;153;153m[48Cfollow-up rescue work to the Cod[38;2;177;185;249mex[38;2;153;153;153m rescue subagent[m[K[38;2;153;153;153m
+/brainstorming                                  (superpowers) You MUST use this before any creative work - creating[m     
+[48X[38;2;153;153;153m[48Cfeatures, building components, adding functionality, or modifying b…[m    [38;2;153;153;153m
+/subagent-driven-development                    (superpowers) Use[m [38;2;153;153;153mwhen [38;2;177;185;249mex[38;2;153;153;153mecuting implementation plans with[m[K
+[48X[38;2;153;153;153m[48Cindependent tasks in the current session[m[K[38;2;153;153;153m
+/cort[38;2;177;185;249mex[38;2;153;153;153m-assets                                  Search and fetch game[m [38;2;153;153;153massets (sprites, spritesheets, tilesets,[m[K
+[48X[38;2;153;153;153m[48Cbackgrounds, t[38;2;177;185;249mex[38;2;153;153;153mtures, sound effects, music, ambience, 3D models) f…[m    [38;2;153;153;153m
+/skill-creator                                  (skill-creator) Create new skills, modify and improve [38;2;177;185;249mex[38;2;153;153;153misting[m[K
+[48X[38;2;153;153;153m[48Cskills, and measure skill performance. Use when users want to creat…[m    [38;2;153;153;153m
+/writing-skills                                 (superpowers) Use when creating new skills, editing [38;2;177;185;249mex[38;2;153;153;153misting skills,[m    
+[48X[38;2;153;153;153m[48Cor verifying skills work before deployment[m[K[38;2;153;153;153m
+/background-removal                             Use when removing backgrounds from images, adding alpha/transparency[m    
+[48X[38;2;153;153;153m[48Cto PNGs, batch processing images for cutouts, creating transparent …[m    [38;2;153;153;153m
+/ua-video-production                            Produce user-acquisition (UA) ad creatives for Animal Escape — game[m     
+[48X[38;2;153;153;153m[48Cscreenshots, gameplay videos, thumbnails, CTA end cards, and music-…[m    [38;2;153;153;153m
+/frontend-design                                Create distinctive, production-grade frontend interfaces with high[m      
+[48X[38;2;153;153;153m[48Cdesign quality. Use this skill when the user asks to build web comp…[m    [38;2;153;153;153m
+/using-git-worktrees                            (superpowers) Use when starting feature work that needs isolation[m       
+[48X[38;2;153;153;153m[48Cfrom current workspace or before [38;2;177;185;249mex[38;2;153;153;153mecuting implementation plans - e…[m    [38;2;215;119;87m[19;1H✶[m]0;⠂ Say hello in five words[38;2;235;159;127m[5Cing[m[38;2;235;159;127m[19;6Hdin[38;2;215;119;87mg[m[38;2;215;119;87m*[m[38;2;255;255;255m●[m 4[K
+[K[38;2;215;119;87m
+*[m [38;2;215;119;87mHer[38;2;235;159;127mdin[38;2;215;119;87mg… [m[K[38;2;153;153;153m
+  ⎿  Tip: Use /statusline to set up a custom status line that will display beneath the input box[m[K
+[K[38;2;136;136;136m
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[38;2;153;153;153m
+> [m/ex[30m[47m [m[K[38;2;136;136;136m
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[38;2;177;185;249m
+/exit                                           Exit the CLI[m[K[38;2;153;153;153m
+/[38;2;177;185;249mex[38;2;153;153;153mport[41X[38;2;177;185;249m[41CEx[38;2;153;153;153mport the current conversation to a file or clipboard[m[K[38;2;153;153;153m
+/[38;2;177;185;249mex[38;2;153;153;153mtra-usage                                    Configure [38;2;177;185;249mex[38;2;153;153;153mtra usage to keep working when limits are hit[m[K[38;2;153;153;153m
+/[38;2;177;185;249mex[38;2;153;153;153mecuting-plans                                (superpowers) Use when you have a written implementation plan to[m        
+[48X[38;2;177;185;249m[48Cex[38;2;153;153;153mecute in a separate session with review checkpoints[m[K[38;2;153;153;153m
+/cod[38;2;177;185;249mex[38;2;153;153;153m:rescue                                   (cod[38;2;177;185;249mex[38;2;153;153;153m) Delegate investigation, an explicit fix request, or[m[K
+[48X[38;2;153;153;153m[48Cfollow-up rescue work to the Cod[38;2;177;185;249mex[38;2;153;153;153m rescue subagent[m[K[38;2;153;153;153m
+/brainstorming                                  (superpowers) You[m [38;2;153;153;153mMUST use this before any creative work - creating[m     
+[48X[38;2;153;153;153m[48Cfeatures, building components, adding functionality, or modifying b…[m    [38;2;153;153;153m
+/subagent-driven-development                    (superpowers) Use when [38;2;177;185;249mex[38;2;153;153;153mecuting implementation plans with[m[K
+[48X[38;2;153;153;153m[48Cindependent tasks in the current session[m[K[38;2;153;153;153m
+/cort[38;2;177;185;249mex[38;2;153;153;153m-assets                                  Search and fetch game assets (sprites, spritesheets, tilesets,[m[K
+[48X[38;2;153;153;153m[48Cbackgrounds, t[38;2;177;185;249mex[38;2;153;153;153mtures, sound effects, music, ambience, 3D models) f…[m    [38;2;153;153;153m
+/skill-creator                                  (skill-creator) Create new skills, modify and improve [38;2;177;185;249mex[38;2;153;153;153misting[m[K
+[48X[38;2;153;153;153m[48Cskills, and measure skill performance. Use when users want to creat…[m    [38;2;153;153;153m
+/writing-skills                                 (superpowers) Use when creating new skills, editing [38;2;177;185;249mex[38;2;153;153;153misting skills,[m    
+[48X[38;2;153;153;153m[48Cor verifying skills work before deployment[m[K[38;2;153;153;153m
+/background-removal                             Use when removing backgrounds from images, adding alpha/transparency[m    
+[48X[38;2;153;153;153m[48Cto PNGs, batch processing images for cutouts, creating transparent …[m    [38;2;153;153;153m
+/ua-video-production                            Produce user-acquisition (UA) ad creatives for Animal Escape — game[m     
+[48X[38;2;153;153;153m[48Cscreenshots, gameplay videos, thumbnails, CTA end cards, and music-…[m    [38;2;153;153;153m
+/frontend-design                                Create distinctive, production-grade frontend interfaces with high[m      
+[48X[38;2;153;153;153m[48Cdesign quality. Use this skill when the user asks to build web comp…[m    [38;2;153;153;153m
+/using-git-worktrees[m[28X[38;2;153;153;153m[28C(superpowers)[m [38;2;153;153;153mUse[m [38;2;153;153;153mwhen[m [38;2;153;153;153mstarting[m [38;2;153;153;153mfeature[m [38;2;153;153;153mwork[m [38;2;153;153;153mthat[m [38;2;153;153;153mneeds[m [38;2;153;153;153misolation[m       
+[38;2;153;153;153m[48Cfrom[m [38;2;153;153;153mcurrent[m [38;2;153;153;153mworkspace[m [38;2;153;153;153mor[m [38;2;153;153;153mbefore[m [38;2;177;185;249mex[38;2;153;153;153mecuting[m [38;2;153;153;153mimplementation[m [38;2;153;153;153mplans[m [38;2;153;153;153m-[m [38;2;153;153;153me…[m    
+[120C[38;2;215;119;87m[19;1H✢[m[38;2;235;159;127m[3Crdi[38;2;215;119;87mn[m[23;6Hi[30m[47m [m[38;2;153;153;153m[26;1H/skill-creator                                  (skill-creator) Create new skills, modify and improve [38;2;177;185;249mexi[38;2;153;153;153msting[m[K
+[48X[38;2;153;153;153m[48Cskills, and measure skill performance. Use when users want to creat…[m    [38;2;153;153;153m
+/writing-skills                                 (superpowers) Use when creating new skills, editing [38;2;177;185;249mexi[38;2;153;153;153msting skills,[m    
+[48X[38;2;153;153;153m[48Cor verifying skills work before deployment[m[K[38;2;153;153;153m
+/ua-video-production                            Produce user-acquisition (UA) ad creatives for Animal Escape — game[m     
+[48X[38;2;153;153;153m[48Cscreenshots, gameplay videos, thumbnails, CTA end cards, and music-…[m    [38;2;153;153;153m
+/using-git-worktrees                            (superpowers) Use[m [38;2;153;153;153mwhen starting feature work that needs isolation[m       
+[48X[38;2;153;153;153m[48Cfrom current workspace or before executing implementation plans - e…[m    [38;2;153;153;153m
+/screenshot-composer                            Compose production-quality App Store and Play Store screenshots by[m      
+[48X[38;2;153;153;153m[48Clayering text, device mockups, images, and shapes onto styled backg…[m    [38;2;153;153;153m
+/find-skills                                    Helps users discover and install agent skills when they ask[m[K
+[48X[38;2;153;153;153m[48Cquestions like "how do I do X", "find a skill for X", "is there a s…[m    [38;2;153;153;153m
+/claude-api                                     Build, debug, and optimize Claude API / Anthropic SDK apps. Apps[m        
+[48X[38;2;153;153;153m[48Cbuilt with this skill should include prompt caching. Also handles m…[m    
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K
+[K[120C[38;2;215;119;87m[19;1H·[m[38;2;233;155;123m[1CHerding…[38;2;215;119;87m [38;2;153;153;153m(4s · ↓[m [38;2;153;153;153m1 tokens)[m[38;2;233;155;123m[19;3HHerding…[38;2;215;119;87m [38;2;153;153;153m(running stop hook · 4s · ↓[m [38;2;153;153;153m2 tokens)[20;3H⎿  Tip: Use /statusline to set up a custom sta[m[21;3H[46X[38;2;136;136;136m
+──────────────────────────────────────────────[38;2;177;185;249m[23;3H/exit[30m[47m [m[40X[40C[38;2;153;153;153m[26;1H/unity-mcp-orchestrator                         Orchestrate Unity Editor via MCP (Model Context Protocol) tools and[m     
+[48X[38;2;153;153;153m[48Cresources. Use when working with Unity projects through MCP for Uni…[m    [38;2;153;153;153m
+/competitor-tracking                            When the user wants to monitor competitor apps on an ongoing basis —[m    
+[48X[38;2;153;153;153m[48Ctracking metadata changes, keyword shifts, screenshot updates, rati…[m    [38;2;153;153;153m
+/competitor-analysis                            When the user wants to analyze competitors' App Store strategy, find[m    
+[48X[38;2;153;153;153m[48Ckeyword gaps, or understand competitive positioning. Also use when …[m    [38;2;153;153;153m
+/extra-usage                                    Configure extra usage to keep working when limits are hit[m[K[38;2;153;153;153m
+/next-forge                                     (vercel) next-forge expert guidance — production-grade Turborepo[m        
+[48X[38;2;153;153;153m[48Cmonorepo SaaS starter by Vercel. Use when working in a next-forge p…[m    [38;2;153;153;153m
+/next-upgrade                                   (vercel) Upgrade Next.js to the latest version following official[m       
+[48X[38;2;153;153;153m[48Cmigration guides and codemods. Use when upgrading Next.js versions,…[m    [38;2;153;153;153m
+/next-cache-components                          (vercel) Next.js 16 Cache Components guidance — PPR, use cache[m[K
+[48X[38;2;153;153;153m[48Cdirective, cacheLife, cacheTag, updateTag, and migration from unsta…[m    [38;2;153;153;153m
+/context                                        Visualize current context usage as a colored grid[m[K[38;2;153;153;153m
+/nextjs                                         (vercel) Next.js App Router expert guidance. Use when building,[m[K
+[48X[38;2;153;153;153m[48Cdebugging, or architecting Next.js applications — routing, Server C…[m    [38;2;153;153;153m
+/app-marketing-context                          When the user wants to create or update their app marketing context[m     
+[48X[38;2;153;153;153m[48Cdocument. Also use when the user mentions "app context", "marketing…[m    [38;2;153;153;153m
+/create-image                                   Generate images using OpenAI and Google Gemini APIs. Use this skill[m     
+[48X[38;2;153;153;153m[48Cwhenever you need to generate, edit, or regenerate art assets — spr…[m    [38;2;153;153;153m
+/screenshot-composer                            Compose production-quality App Store and Play Store screenshots by[m      
+[48X[38;2;153;153;153m[48Clayering text, device mockups, images, and shapes onto styled backg…[m    [38;2;153;153;153m
+/press-and-pr                                   When the user wants to get press coverage, media mentions, or[m[K
+[48X[38;2;153;153;153m[48Ceditorial features for their app — including writing press releases…[m    [38;2;234;158;126m[19;3HHerding…[38;2;215;119;87m [38;2;153;153;153m(running stop hook · 4s · ↓[m [38;2;153;153;153m3[m[38;2;235;159;127m[19;3HHerding…[m[38;2;153;153;153m[29C4[m[38;2;215;119;87m✢[m [38;2;235;158;126mHerding…[38;2;215;119;87m [38;2;153;153;153m(running stop hook · 4s · ↓[m [38;2;153;153;153m5[m[38;2;234;157;125m[19;3HHerding…[38;2;215;119;87m [38;2;153;153;153m(running stop hook · 4s · ↓[m [38;2;153;153;153m6[m]0;✳ Say hello in five words[38;2;153;153;153m✻[m [38;2;153;153;153mSautéed for 4s[m[K
+[K[38;2;136;136;136m
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[m
+> [38;2;177;185;249m/exit[30m[47m [m[K[38;2;136;136;136m
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[38;2;177;185;249m
+/exit                                           Exit the CLI[m[K[38;2;153;153;153m
+/unity-mcp-orchestrator                         Orchestrate Unity Editor via MCP (Model Context Protocol) tools and[m     
+[48X[38;2;153;153;153m[48Cresources. Use when working with Unity projects through MCP for Uni…[m    [38;2;153;153;153m
+/competitor-tracking                            When the user wants to monitor competitor apps on an ongoing basis —[m    
+[48X[38;2;153;153;153m[48Ctracking metadata changes, keyword shifts, screenshot updates, rati…[m    [38;2;153;153;153m
+/competitor-analysis                            When the user wants to analyze competitors' App Store strategy, find[m    
+[48X[38;2;153;153;153m[48Ckeyword gaps, or understand competitive positioning. Also use when …[m    [38;2;153;153;153m
+/extra-usage                                    Configure extra usage to keep working when limits are hit[m[K[38;2;153;153;153m
+/next-forge                                     (vercel) next-forge expert guidance — production-grade Turborepo[m        
+[48X[38;2;153;153;153m[48Cmonorepo SaaS starter by Vercel. Use when working in a next-forge p…[m    [38;2;153;153;153m
+/next-upgrade                                   (vercel) Upgrade Next.js to the latest version following official[m       
+[48X[38;2;153;153;153m[48Cmigration guides and codemods. Use when upgrading Next.js versions,…[m    [38;2;153;153;153m
+/next-cache-components                          (vercel) Next.js 16 Cache Components guidance — PPR, use cache[m[K
+[48X[38;2;153;153;153m[48Cdirective, cacheLife, cacheTag, updateTag, and migration from unsta…[m    [38;2;153;153;153m
+/context                                        Visualize current context usage as a colored grid[m[K[38;2;153;153;153m
+/nextjs                                         (vercel) Next.js App Router expert guidance. Use when building,[m[K
+[48X[38;2;153;153;153m[48Cdebugging, or architecting Next.js applications — routing, Server C…[m    [38;2;153;153;153m
+/app-marketing-context                          When the user wants to create or update their app marketing context[m     
+[48X[38;2;153;153;153m[48Cdocument. Also use when the user mentions "app context", "marketing…[m    [38;2;153;153;153m
+/create-image                                   Generate images using OpenAI and Google Gemini APIs. Use this skill[m     
+[48X[38;2;153;153;153m[48Cwhenever you need to generate, edit, or regenerate art assets — spr…[m    [38;2;153;153;153m
+/screenshot-composer                            Compose production-quality App Store and Play Store screenshots by[m      
+[48X[38;2;153;153;153m[48Clayering text, device mockups, images, and shapes onto styled backg…[m    [38;2;153;153;153m
+/press-and-pr                                   When the user wants to get press coverage, media mentions, or[m[K
+[48X[38;2;153;153;153m[48Ceditorial features for their app — including writing press releases…[m    
+[K
+[K[120C[>4m[<u[?1004l[?2031l[?2004lResume this session with:]0;[?25h
+claude --resume c2ca7045-74c6-4370-a41f-905427f8ea4c
