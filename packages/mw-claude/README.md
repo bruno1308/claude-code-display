@@ -6,9 +6,12 @@ encrypted Cloudflare relay.
 
 ## Status
 
-Plan 2 deliverable. Pairing + E2E encryption over the public internet works.
-The browser test client at the relay URL is a dev surface; the real glasses
-webapp lands in Plan 3.
+Plan 3 deliverable. The companion webapp at the relay URL is built for
+Meta Display Glasses (600×600 viewport, D-pad / EMG input, tap-to-talk via
+Web Speech API), and also works in any modern browser for laptop testing.
+End-to-end verified on real Display hardware. Web Speech availability on
+the Display browser is currently `service-not-allowed`; the Whisper
+fallback lands in Plan 4.
 
 ## Requirements
 
